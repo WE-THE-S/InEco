@@ -26,3 +26,4 @@
 .history
 
 # End of https://www.gitignore.io/api/platformio,visualstudiocode
+.vscode/launch.json

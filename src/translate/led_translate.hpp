@@ -20,12 +20,12 @@ class LedTranslate : protected Translate {
         auto message = new device_communication_message_t;
         this->master->readBytes(message->bytes, sizeof(device_communication_message_t)); 
         switch(message->type){
-            case MessageType::RUN_MOTOR : {
+            case MESSAGE_TYPE::RUN_MOTOR : {
                 this->bottom->write(message->bytes, sizeof(device_communication_message_t));
                 this->right->write(message->bytes, sizeof(device_communication_message_t));
                 break;
             }
-            case MessageType::SET_COLOR : {
+            case MESSAGE_TYPE::SET_COLOR : {
             auto led = reinterpret_cast<led_message_t*>(&(message->message));
             if(led->row == 0 & led->col == 0){
                 

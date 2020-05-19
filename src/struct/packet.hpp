@@ -7,23 +7,23 @@ using namespace std;
 const uint8_t PACKET_SIZE = 6;
 
 #pragma pack(push, 1)
-enum class MessageType : uint8_t {
+enum class MESSAGE_TYPE : uint8_t {
     SET_COLOR,
     RUN_MOTOR,
     GET_SIZE
 };
 
-enum class MessageDirection : uint8_t {
+enum class MESSAGE_DIRECTION : uint8_t {
     TO_MASTER = 0x80,
     TO_SLAVE = 0x0,
 };
 
-enum class MotorStatus : uint8_t {
+enum class MOTOR_STATUS : uint8_t {
     MOTOR_OFF,
     MOTOR_ON,
 };
 
-enum class PacketDirection : uint8_t {
+enum class PACKET_OUTPUT_DIRECTION : uint8_t {
     MASTER,
     RIGHT,
     BOTTOM
@@ -51,7 +51,7 @@ typedef union _led_message_t {
 
 typedef union _motor_message_t {
     struct {
-        MotorStatus status;
+        MOTOR_STATUS status;
     };
     base_message_t message;
 } motor_message_t;
@@ -59,8 +59,8 @@ typedef union _motor_message_t {
 typedef union __device_communication_message_t {
     struct{
         union {
-            MessageType type;
-            MessageDirection dir;
+            MESSAGE_TYPE type;
+            MESSAGE_DIRECTION dir;
         };
         base_message_t message;
         uint8_t crc;

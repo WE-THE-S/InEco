@@ -23,18 +23,28 @@ enum class MotorStatus : uint8_t {
     MOTOR_ON,
 };
 
+enum class PacketDirection : uint8_t {
+    MASTER,
+    RIGHT,
+    BOTTOM
+};
+
 typedef struct _base_message_t {
     uint8_t bytes[PACKET_SIZE];
 } base_message_t;
+
+typedef struct _color_t{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t bright;
+} color_t;
 
 typedef union _led_message_t {
     struct {
         uint8_t col; //열
         uint8_t row; //행, 줄
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-        uint8_t light;
+        color_t color;
     };
     base_message_t message;
 } led_message_t;
@@ -51,7 +61,7 @@ typedef union __device_communication_message_t {
         union {
             MessageType type;
             MessageDirection dir;
-        }
+        };
         base_message_t message;
         uint8_t crc;
     };

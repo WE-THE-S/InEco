@@ -8,14 +8,13 @@ void setup() {
   #if defined(LED_BOARD)
  
   #elif defined(CONTROL_BOARD)
-    Serial1.begin(115200);
-    Serial2.
+      
   #endif
 }
 
 void loop() {
   #if defined(LED_BOARD)
- 
+  
   #elif defined(CONTROL_BOARD)
     
   #endif

@@ -1,30 +1,64 @@
 #ifndef __PACKET_HPP__
 #define __PACKET_HPP__
-#include <inttypes.h>
+#include <cstdint>
+
+using namespace std;
+
+const uint8_t PACKET_SIZE = 6;
 
 #pragma pack(push, 1)
 enum class MessageType : uint8_t {
-    SET_COLOR = 0,
-    RUN_MOTOR = 1,
-    SET = 2
+    SET_COLOR,
+    RUN_MOTOR,
+    GET_SIZE
 };
 
-typedef union _led_message_t {
-    struct{
+enum class MessageDirection : uint8_t {
+    TO_MASTER = 0x80,
+    TO_SLAVE = 0x0,
+};
 
+enum class MotorStatus : uint8_t {
+    MOTOR_OFF,
+    MOTOR_ON,
+};
+
+typedef struct _base_message_t {
+    uint8_t bytes[PACKET_SIZE];
+} base_message_t;
+
+typedef union _led_message_t {
+    struct {
+        uint8_t col; //열
+        uint8_t row; //행, 줄
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+        uint8_t light;
     };
-    uint8_t bytes[];
+    base_message_t message;
 } led_message_t;
 
-typedef struct broadcast_message_t {
-    MessageType type : 2;
-    uint8_t length : 6; //최대 64byte
-    uint8_t targetRow;
-    uint8_t targetCol;
-    uint8_t row;
-    uint8_t col;
-    uint8_t* value;
-    uint8_t crc;
-} message_t;
+typedef union _motor_message_t {
+    struct {
+        MotorStatus status;
+    };
+    base_message_t message;
+} motor_message_t;
+
+typedef union __device_communication_message_t {
+    struct{
+        union {
+            MessageType type;
+            MessageDirection dir;
+        }
+        base_message_t message;
+        uint8_t crc;
+    };
+    uint8_t bytes[];
+    uint8_t getCrc(){
+        return static_cast<uint8_t>(bytes[0] ^ bytes[1] ^ bytes[2] ^ bytes[3] ^ bytes[4] ^ bytes[5] ^ bytes[6]);
+    }
+} device_communication_message_t;
 #pragma pack(pop)
 #endif

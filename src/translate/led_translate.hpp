@@ -6,6 +6,10 @@
 #include "./translate.hpp"
 
 class LedTranslate : protected Translate {
+    protected:
+    void broadcast(const device_communication_message_t const message){
+        Broadcast::getInstance()->broadcast(message);
+    }
     public:
     LedTranslate(HardwareSerial* _master, HardwareSerial* _right, HardwareSerial* _bottom) : 
         Translate(_master, _right, _bottom) {
@@ -21,6 +25,7 @@ class LedTranslate : protected Translate {
         this->master->readBytes(message->bytes, sizeof(device_communication_message_t)); 
         switch(message->type){
             case MESSAGE_TYPE::RUN_MOTOR : {
+                this->broadcast(*message);
                 this->bottom->write(message->bytes, sizeof(device_communication_message_t));
                 this->right->write(message->bytes, sizeof(device_communication_message_t));
                 break;
@@ -28,7 +33,7 @@ class LedTranslate : protected Translate {
             case MESSAGE_TYPE::SET_COLOR : {
             auto led = reinterpret_cast<led_message_t*>(&(message->message));
             if(led->row == 0 & led->col == 0){
-                
+                this->broadcast(*message);
             }else{
                 led->col -= 1;
                 this->right->write(message->bytes, sizeof(device_communication_message_t));

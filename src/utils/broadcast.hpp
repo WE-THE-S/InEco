@@ -22,10 +22,14 @@ class Broadcast{
             }
             return instance;
         }
-        void broadcast(const device_communication_message_t message){
+        void broadcast(const device_communication_message_t const message){
             for(auto& recv : receiver){
                 recv.messageRecv(message);
             }
+        }
+        Broadcast& operator+=(const BroadcastReceiver& client){
+            receiver.push_back(client);
+            return *this;
         }
 };
 

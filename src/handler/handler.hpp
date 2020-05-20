@@ -4,27 +4,14 @@
 #include <queue>
 #include <cstdint>
 #include "../struct/packet.hpp"
+#include "../struct/broadcast_receiver.hpp"
 
 using namespace std;
 
-class Handler {
-    protected:
-        queue<pair<MESSAGE_TYPE, base_message_t>> commandQueue;
-
+class Handler : public BroadcastReceiver{
     public:
-        Handler(){
-        }
-
-        ~Handler(){
-        }
-
-        void clear(){
-            queue<pair<MESSAGE_TYPE, base_message_t>> empty;
-            swap(empty, commandQueue);
-        }
-        
-        virtual void execute(){
-
+        void messageRecv(const device_communication_message_t const message){
+            ESP_LOGE(typename(this), "No configure message receiver");    
         }
 };
 

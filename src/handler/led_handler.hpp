@@ -12,32 +12,39 @@ using namespace std;
 
 class LedHanlder : protected Handler {
     private:
-        gpio_num_t motor;
-        gpio_num_t led;
-
+        gpio_num_t motorPin;
+        gpio_num_t ledPin;
+    
     public:
-    LedHanlder(gpio_num_t _motor, gpio_num_t _led) : motor(_motor), led(_led), Handler() {
+    LedHanlder(gpio_num_t _motor, gpio_num_t _led) : motorPin(_motor), ledPin(_led) {
 
     }
     LedHanlder() : LedHanlder(MOTOR_DEFAULT_PIN, LED_CONTROL_DEFAULT_PIN) {
 
     }
-
-    void execute(){
-        while(this->commandQueue.size() > 0){
-            auto command = this->commandQueue.front();
-            switch(command.first){
-                case MESSAGE_TYPE::RUN_MOTOR : {
-                    motor_message_t motor = dynamic_cast<motor_message_t>(command.second);
-                    break;
+    void messageRecv(const device_communication_message_t const message){
+        switch(message.type){
+            case MESSAGE_TYPE::RUN_MOTOR : {
+                auto motor = new motor_message_t;
+                motor->message = message.message;
+                switch(motor->status){
+                    case MOTOR_STATUS::MOTOR_OFF : {
+                        digitalWrite(motorPin, LOW);
+                        break;
+                    }
+                    case MOTOR_STATUS::MOTOR_ON :{
+                        digitalWrite(motorPin, HIGH);
+                    }
                 }
-                case MESSAGE_TYPE::SET_COLOR : {
-                    led_message_t led = reinterpret_cast<led_message_t>(command.second);
-                    
-                    break;
-                }
+                delete motor;
+                break;
             }
-            this->commandQueue.pop();
+            case MESSAGE_TYPE::SET_COLOR : {
+                auto led = new led_message_t;
+                led->message = message.message;
+                delete led;
+                break;
+            }
         }
     }
 };

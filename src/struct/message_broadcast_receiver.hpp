@@ -3,7 +3,7 @@
 
 #include "./packet.hpp"
 
-class BroadcastReceiver {
+class MessageBroadcastReceiver {
     public:
     virtual void messageRecv(const device_communication_message_t const message);
 };

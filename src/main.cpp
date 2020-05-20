@@ -16,7 +16,7 @@
   LedTranslate translate;
 #elif CONTROL_BOARD == 1
   ControlTranslate translate;
-  Alarm alarm;
+  Alarm ledAlarm;
   WaterLevel waterLevel;
 #endif
 
@@ -27,7 +27,7 @@ void setup() {
     instance->add(&motor);
   #elif CONTROL_BOARD == 1
     auto instance = Broadcast<service_signal_t>::getInstance();
-    instance->add(&alarm);
+    instance->add(&ledAlarm);
     instance->add(&waterLevel);
   #endif
 }

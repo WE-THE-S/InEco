@@ -19,8 +19,8 @@
 void setup() {
   #if defined(LED_BOARD)
     Broadcast* instance = Broadcast::getInstance();
-    instance->add(led);
-    instance->add(motor);
+    instance->add(&led);
+    instance->add(&motor);
   #elif defined(CONTROL_BOARD)
     
   #endif

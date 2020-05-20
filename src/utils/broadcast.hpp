@@ -10,26 +10,20 @@
 using namespace std;
 class Broadcast{
     private:
-        static Broadcast* instance;
-        vector<MessageBroadcastReceiver> receiver;
-        Broadcast(){
-            
-        }
+        vector<MessageBroadcastReceiver*> receiver;
     public:
-        static Broadcast* getInstance(){
-            if(instance == nullptr){
-                instance = new Broadcast();
-            }
-            return instance;
+        static Broadcast* getInstance() {
+            static Broadcast instance;
+            return &instance;
         }
         
         void broadcast(const device_communication_message_t message){
             for(auto& recv : receiver){
-                recv.messageRecv(message);
+                recv->messageRecv(message);
             }
         }
 
-        void add(const MessageBroadcastReceiver& client){
+        void add(MessageBroadcastReceiver* client){
             receiver.push_back(client);
         }
 };

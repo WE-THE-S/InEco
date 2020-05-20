@@ -19,5 +19,7 @@ const gpio_num_t RIGHT_UART_TX = GPIO_NUM_14;
 
 const gpio_num_t MOTOR_DEFAULT_PIN = GPIO_NUM_12;
 const gpio_num_t LED_CONTROL_DEFAULT_PIN = GPIO_NUM_10;
+const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_19;
+const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_21;
 
 #endif

@@ -10,9 +10,9 @@
 
 using namespace std;
 
-class LedHanlder : public GpioHandler {
+class LedHanlder : public MessageGpioControlHandler {
     public:
-    LedHanlder(gpio_num_t _led) : GpioHandler(_led) {
+    LedHanlder(gpio_num_t _led) : MessageGpioControlHandler(_led) {
 
     }
 

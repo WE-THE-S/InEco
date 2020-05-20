@@ -8,9 +8,9 @@
 #include "../struct/packet.hpp"
 #include "../struct/handler/gpio_handler.hpp"
 
-class MotorHanlder : public GpioHandler {
+class MotorHanlder : public MessageGpioControlHandler {
     public:
-    MotorHanlder(gpio_num_t _motor) : GpioHandler(_motor) {
+    MotorHanlder(gpio_num_t _motor) : MessageGpioControlHandler(_motor) {
 
     }
 

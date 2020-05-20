@@ -73,7 +73,8 @@ typedef union __device_communication_message_t {
 
 enum class SERVICE_SIGNAL_TYPE : uint8_t {
     ALARM,
-    WATER_LEVEL
+    WATER_LEVEL,
+    MOTOR_INTERVAL_SET
 };
 
 typedef struct _service_signal_t {
@@ -83,6 +84,17 @@ typedef struct _service_signal_t {
         uint8_t bytes[];
     };
 } service_signal_t;
+
+typedef union _motor_interval_service_signal_t {
+    uint64_t value;
+    struct{
+        bool isIntervalSet;
+        uint16_t intervalTime;
+        uint16_t intervalSpan;
+        bool enable;
+        bool onOff;
+    };
+} motor_interval_service_signal_t;
 
 #pragma pack(pop)
 #endif

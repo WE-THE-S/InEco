@@ -48,7 +48,7 @@ void setup() {
     });
 
     server.on("/motor/set/{}", []() {
-      std::String arg = server.pathArg(0);
+      String arg = server.pathArg(0);
       long time = atol(arg.c_str());
       server.send(200, "text/plain", "User: '" + arg + "'");
     });

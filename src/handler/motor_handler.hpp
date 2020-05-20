@@ -19,18 +19,18 @@ class MotorHanlder : public GpioHandler {
     MotorHanlder() : MotorHanlder(MOTOR_DEFAULT_PIN) {
 
     }
-    
+
     void messageRecv(const device_communication_message_t const message){
         if(message.type == MESSAGE_TYPE::RUN_MOTOR){
-            auto motor = new motor_message_t;
-            motor->message = message.message;
-            switch(motor->status){
+            motor_message_t motor;
+            motor.message = message.message;
+            switch(motor.status){
                 case MOTOR_STATUS::MOTOR_OFF : {
-                    digitalWrite(pin, LOW);
+                    digitalWrite(this->pin, LOW);
                     break;
                 }
                 case MOTOR_STATUS::MOTOR_ON :{
-                    digitalWrite(pin, HIGH);
+                    digitalWrite(this->pin, HIGH);
                 }
             }
         }

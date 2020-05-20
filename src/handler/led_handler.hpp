@@ -19,12 +19,11 @@ class LedHanlder : public GpioHandler {
     LedHanlder() : LedHanlder(LED_CONTROL_DEFAULT_PIN) {
 
     }
-    
+
     void messageRecv(const device_communication_message_t const message){
         if(message.type == MESSAGE_TYPE::SET_COLOR){
-            auto led = new led_message_t;
-            led->message = message.message;
-            delete led;
+            led_message_t led;
+            led.message = message.message;
         }
     }
 };

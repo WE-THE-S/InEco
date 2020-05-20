@@ -1,15 +1,15 @@
-#ifndef __HANDLER_HPP__
-#define __HANDLER_HPP__
+#ifndef __GPIO_HANDLER_HPP__
+#define __GPIO_HANDLER_HPP__
 
 #include <Arduino.h>
 #include <queue>
 #include <cstdint>
 #include "../packet.hpp"
-#include "../broadcast_receiver.hpp"
+#include "../message_broadcast_receiver.hpp"
 
 using namespace std;
 
-class GpioHandler : public BroadcastReceiver{
+class GpioHandler : public MessageBroadcastReceiver{
     protected:
         gpio_num_t pin;
     

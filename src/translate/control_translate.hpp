@@ -1,9 +1,9 @@
-#ifndef __CONTROL_HPP__
-#define __CONTROL_HPP__
+#ifndef __CONTROL_TRANSLATE_HPP__
+#define __CONTROL_TRANSLATE_HPP__
 
 #include <Arduino.h>
 #include "../struct/packet.hpp"
-#include "./translate.hpp"
+#include "../struct/translate.hpp"
 
 class ControlTranslate : protected Translate {
     public:

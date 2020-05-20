@@ -1,9 +1,9 @@
-#ifndef __SLAVE_HPP__
-#define __SLAVE_HPP__
+#ifndef __LED_TRANSLATE_HPP__
+#define __LED_TRANSLATE_HPP__
 
 #include <Arduino.h>
 #include "../struct/packet.hpp"
-#include "../struct/translate.hpp"
+#include "../struct/message_broadcast_receiver.hpp"
 
 class LedTranslate : protected Translate {
     protected:

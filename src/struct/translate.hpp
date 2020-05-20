@@ -1,5 +1,5 @@
-#ifndef __COMMUNCATION_HPP__
-#define __COMMUNCATION_HPP__
+#ifndef __TRANSLATE_HPP__
+#define __TRANSLATE_HPP__
 
 #include <Arduino.h>
 #include <queue>

@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include <queue>
 #include "../config.hpp"
-#include "../struct/packet.hpp"
 #include "../utils/broadcast.hpp"
+#include "./packet.hpp"
 
 using namespace std;
 
@@ -35,6 +35,7 @@ class Translate{
     virtual void recv(){
         ESP_LOGE(typename(this), "No configure recv");
     }
+
     virtual void send(){
         ESP_LOGE(typename(this), "No configure send");
     }

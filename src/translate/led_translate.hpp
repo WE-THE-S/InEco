@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include "../struct/packet.hpp"
-#include "./translate.hpp"
+#include "../struct/translate.hpp"
 
 class LedTranslate : protected Translate {
     protected:

@@ -67,7 +67,11 @@ typedef union __device_communication_message_t {
     };
     uint8_t bytes[];
     uint8_t getCrc(){
-        return static_cast<uint8_t>(bytes[0] ^ bytes[1] ^ bytes[2] ^ bytes[3] ^ bytes[4] ^ bytes[5] ^ bytes[6]);
+        uint8_t crc = 0x00;
+        for(uint8_t i = 0;i<sizeof(union __device_communication_message_t);i++){
+            crc ^= bytes[i];
+        }
+        return crc;
     }
 } device_communication_message_t;
 #pragma pack(pop)

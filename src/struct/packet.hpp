@@ -57,17 +57,15 @@ typedef union __device_communication_message_t {
         union {
             MESSAGE_TYPE type;
             MESSAGE_DIRECTION dir;
-        };
+        } ;
         base_message_t message;
         uint8_t crc;
     };
     uint8_t bytes[];
     uint8_t getCrc(){
-        uint8_t crc = 0x00;
-        for(uint8_t i = 0;i<sizeof(union __device_communication_message_t) - 1;i++){
-            crc ^= bytes[i];
-        }
-        return crc;
+        uint8_t result = static_cast<uint8_t>(type) ^ message.bytes[0] ^ message.bytes[1] ^ 
+                        message.bytes[2] ^ message.bytes[3] ^ message.bytes[4] ^ message.bytes[5];
+        return result;
     }
 } device_communication_message_t;
 

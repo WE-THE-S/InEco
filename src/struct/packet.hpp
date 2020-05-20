@@ -2,8 +2,6 @@
 #define __PACKET_HPP__
 #include <cstdint>
 
-using namespace std;
-
 const uint8_t PACKET_SIZE = 6;
 
 #pragma pack(push, 1)
@@ -23,11 +21,6 @@ enum class MOTOR_STATUS : uint8_t {
     MOTOR_ON,
 };
 
-enum class PACKET_OUTPUT_DIRECTION : uint8_t {
-    MASTER,
-    RIGHT,
-    BOTTOM
-};
 
 typedef struct _base_message_t {
     uint8_t bytes[PACKET_SIZE];
@@ -56,6 +49,9 @@ typedef union _motor_message_t {
     base_message_t message;
 } motor_message_t;
 
+/***
+ * @brief 장치간 통신을 위한 패킷
+ **/
 typedef union __device_communication_message_t {
     struct{
         union {
@@ -74,5 +70,12 @@ typedef union __device_communication_message_t {
         return crc;
     }
 } device_communication_message_t;
+
+enum class SIGNAL_TYPE : uint8_t {
+    REQUEST_SEND_TO_MASTER_DEVICE,
+    REQUEST_SEND_TO_ANOTHER_DEVICE
+};
+
+
 #pragma pack(pop)
 #endif

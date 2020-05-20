@@ -2,7 +2,7 @@
 #define __BROADCAST_HPP__
 
 #include "../struct/packet.hpp"
-#include "../struct/message_broadcast_receiver.hpp"
+#include "../struct/broadcast/message_broadcast_receiver.hpp"
 
 #include <vector>
 #include <algorithm>

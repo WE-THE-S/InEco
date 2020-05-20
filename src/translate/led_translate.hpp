@@ -22,7 +22,6 @@ class LedTranslate : protected Translate {
 
     void recv(){
         if(this->master->available() >= sizeof(device_communication_message_t)){
-        switch(message->type){
             auto message = new device_communication_message_t;
             this->master->readBytes(message->bytes, sizeof(device_communication_message_t)); 
             switch(message->type){

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include "../packet.hpp"
-#include "../message_broadcast_receiver.hpp"
+#include "../broadcast/message_broadcast_receiver.hpp"
 
 class MessageGpioControlHandler : public MessageBroadcastReceiver{
     protected:

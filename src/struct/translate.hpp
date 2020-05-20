@@ -2,12 +2,9 @@
 #define __TRANSLATE_HPP__
 
 #include <Arduino.h>
-#include <queue>
 #include "../config.hpp"
 #include "../utils/broadcast.hpp"
 #include "./packet.hpp"
-
-using namespace std;
 
 class Translate{
     protected:

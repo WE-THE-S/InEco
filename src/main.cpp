@@ -18,7 +18,7 @@
 
 void setup() {
   #if defined(LED_BOARD)
-    Broadcast* instance = Broadcast::getInstance();
+    auto instance = Broadcast<device_communication_message_t>::getInstance();
     instance->add(&led);
     instance->add(&motor);
   #elif defined(CONTROL_BOARD)

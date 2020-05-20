@@ -8,6 +8,8 @@
 #include <algorithm>
 
 using namespace std;
+
+template <typename T>
 class Broadcast{
     private:
         vector<MessageBroadcastReceiver*> receiver;
@@ -17,9 +19,9 @@ class Broadcast{
             return &instance;
         }
         
-        void broadcast(const device_communication_message_t message){
+        void broadcast(const T message){
             for(auto& recv : receiver){
-                recv->messageRecv(message);
+                recv->onMessage(message);
             }
         }
 

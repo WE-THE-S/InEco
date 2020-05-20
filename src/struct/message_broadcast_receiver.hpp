@@ -5,7 +5,7 @@
 
 class MessageBroadcastReceiver {
     public:
-    virtual void messageRecv(const device_communication_message_t message);
+    virtual void onMessage(const device_communication_message_t message);
 };
 
 #endif

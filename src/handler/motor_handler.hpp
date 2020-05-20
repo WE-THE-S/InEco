@@ -1,5 +1,5 @@
-#ifndef __LED_HANDLER_HPP__
-#define __LED_HANDLER_HPP__
+#ifndef __MOTOR_HANDLER_HPP__
+#define __MOTOR_HANDLER_HPP__
 
 #include <Arduino.h>
 #include <queue>
@@ -7,8 +7,6 @@
 #include "../config.hpp"
 #include "../struct/packet.hpp"
 #include "../struct/handler/gpio_handler.hpp"
-
-using namespace std;
 
 class MotorHanlder : public GpioHandler {
     public:

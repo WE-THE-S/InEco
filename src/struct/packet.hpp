@@ -64,18 +64,25 @@ typedef union __device_communication_message_t {
     uint8_t bytes[];
     uint8_t getCrc(){
         uint8_t crc = 0x00;
-        for(uint8_t i = 0;i<sizeof(union __device_communication_message_t);i++){
+        for(uint8_t i = 0;i<sizeof(union __device_communication_message_t) - 1;i++){
             crc ^= bytes[i];
         }
         return crc;
     }
 } device_communication_message_t;
 
-enum class SIGNAL_TYPE : uint8_t {
-    REQUEST_SEND_TO_MASTER_DEVICE,
-    REQUEST_SEND_TO_ANOTHER_DEVICE
+enum class SERVICE_SIGNAL_TYPE : uint8_t {
+    ALARM,
+    WATER_LEVEL
 };
 
+typedef struct _service_signal_t {
+    SERVICE_SIGNAL_TYPE type; 
+    union{
+        uint64_t value;
+        uint8_t bytes[];
+    };
+} service_signal_t;
 
 #pragma pack(pop)
 #endif

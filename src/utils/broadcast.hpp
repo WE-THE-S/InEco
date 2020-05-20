@@ -12,7 +12,7 @@ using namespace std;
 template <typename T>
 class Broadcast{
     private:
-        vector<MessageBroadcastReceiver*> receiver;
+        vector<BroadcastReceiver<T>*> receiver;
     public:
         static Broadcast* getInstance() {
             static Broadcast instance;
@@ -25,7 +25,7 @@ class Broadcast{
             }
         }
 
-        void add(MessageBroadcastReceiver* client){
+        void add(BroadcastReceiver<T>* client){
             receiver.push_back(client);
         }
 };

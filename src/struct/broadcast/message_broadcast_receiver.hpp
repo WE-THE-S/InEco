@@ -2,10 +2,10 @@
 #define __MESSAGE_BROADCAST_RECEIVER_HPP__
 
 #include "../packet.hpp"
+#include "./receiver.hpp"
 
-class MessageBroadcastReceiver {
-    public:
-    virtual void onMessage(const device_communication_message_t message);
+class MessageBroadcastReceiver : public BroadcastReceiver<device_communication_message_t> {
+    
 };
 
 #endif

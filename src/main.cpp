@@ -3,32 +3,39 @@
 #include "./struct/packet.hpp"
 #include "./handler/led_handler.hpp"
 #include "./handler/motor_handler.hpp"
+#include "./service/alarm.hpp"
+#include "./service/water_level.hpp"
 #include "./utils/broadcast.hpp"
 #include "./translate/led_translate.hpp"
 #include "./translate/control_translate.hpp"
 #include "./struct/translate.hpp"
 
-#if defined(LED_BOARD)
+#if LED_BOARD == 1
   LedHanlder led;
   MotorHanlder motor;
   LedTranslate translate;
-#elif defined(CONTROL_BOARD)
+#elif CONTROL_BOARD == 1
   ControlTranslate translate;
+  Alarm alarm;
+  WaterLevel waterLevel;
 #endif
 
 void setup() {
-  #if defined(LED_BOARD)
+  #if LED_BOARD == 1
     auto instance = Broadcast<device_communication_message_t>::getInstance();
     instance->add(&led);
     instance->add(&motor);
-  #elif defined(CONTROL_BOARD)
-    
+  #elif CONTROL_BOARD == 1
+    auto instance = Broadcast<service_signal_t>::getInstance();
+    instance->add(&alarm);
+    instance->add(&waterLevel);
   #endif
 }
 
 void loop() {
-  translate.recv();
-  #if defined(CONTROL_BOARD)
-    
+  #if LED_BOARD == 1
+    translate.recv();
+  #elif CONTROL_BOARD == 1
+    waterLevel.execute();
   #endif
 }

@@ -18,7 +18,7 @@ class MotorHanlder : public GpioHandler {
 
     }
 
-    void messageRecv(const device_communication_message_t const message){
+    void messageRecv(const device_communication_message_t message){
         if(message.type == MESSAGE_TYPE::RUN_MOTOR){
             motor_message_t motor;
             motor.message = message.message;

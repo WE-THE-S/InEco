@@ -18,7 +18,7 @@ class GpioHandler : public MessageBroadcastReceiver{
             
         }
         
-        void messageRecv(const device_communication_message_t const message){
+        void messageRecv(const device_communication_message_t message){
             ESP_LOGE(typename(this), "No configure message receiver");    
         }
 };

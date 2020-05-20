@@ -23,7 +23,7 @@ class Broadcast{
             return instance;
         }
         
-        void broadcast(const device_communication_message_t const message){
+        void broadcast(const device_communication_message_t message){
             for(auto& recv : receiver){
                 recv.messageRecv(message);
             }

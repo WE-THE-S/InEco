@@ -3,11 +3,11 @@
 
 #include <Arduino.h>
 #include "../struct/packet.hpp"
-#include "../struct/message_broadcast_receiver.hpp"
+#include "../struct/translate.hpp"
 
 class LedTranslate : protected Translate {
     protected:
-    void broadcast(const device_communication_message_t const message){
+    void broadcast(const device_communication_message_t message){
         Broadcast::getInstance()->broadcast(message);
     }
     public:
@@ -32,7 +32,7 @@ class LedTranslate : protected Translate {
             }
             case MESSAGE_TYPE::SET_COLOR : {
             auto led = reinterpret_cast<led_message_t*>(&(message->message));
-            if(led->row == 0 & led->col == 0){
+            if((led->row == 0) && (led->col == 0)){
                 this->broadcast(*message);
             }else{
                 led->col -= 1;

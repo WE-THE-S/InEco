@@ -20,7 +20,7 @@ class LedHanlder : public GpioHandler {
 
     }
 
-    void messageRecv(const device_communication_message_t const message){
+    void messageRecv(const device_communication_message_t message){
         if(message.type == MESSAGE_TYPE::SET_COLOR){
             led_message_t led;
             led.message = message.message;

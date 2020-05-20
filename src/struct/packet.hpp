@@ -74,7 +74,8 @@ typedef union __device_communication_message_t {
 enum class SERVICE_SIGNAL_TYPE : uint8_t {
     ALARM,
     WATER_LEVEL,
-    MOTOR_INTERVAL_SET
+    MOTOR_INTERVAL_SET,
+    PACKET_SEND
 };
 
 typedef struct _service_signal_t {
@@ -95,6 +96,17 @@ typedef union _motor_interval_service_signal_t {
         bool onOff;
     };
 } motor_interval_service_signal_t;
+
+typedef union _communcation_service_signal_t {
+    uint64_t value;
+    struct{
+        union {
+            MESSAGE_TYPE type;
+            MESSAGE_DIRECTION dir;
+        };
+        base_message_t* message;
+    };
+} communcation_service_signal_t;
 
 #pragma pack(pop)
 #endif

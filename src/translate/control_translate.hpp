@@ -23,7 +23,21 @@ class ControlTranslate : protected Translate, public ServiceSignalBroadcastRecei
         }
 
         void onMessage(const service_signal_t message){
+            if(message.type == SERVICE_SIGNAL_TYPE::PACKET_SEND){
+                communcation_service_signal_t signal;
+                device_communication_message_t message;
+                message.dir = MESSAGE_DIRECTION::TO_SLAVE;
+                message.type = MESSAGE_TYPE::RUN_MOTOR;
 
+                
+                this->bottom->write(message->bytes, sizeof(device_communication_message_t));
+                this->right->write(message->bytes, sizeof(device_communication_message_t));
+                if(message.value){
+                    digitalWrite(pin, HIGH);
+                }else{
+                    digitalWrite(pin, LOW);
+                }
+            }
         }
 };
 

@@ -4,8 +4,8 @@
 #include "../packet.hpp"
 #include "./receiver.hpp"
 
-class ServiceSignalBroadcastReceiver : public BroadcastReceiver<device_communication_message_t> {
-    
+class ServiceSignalBroadcastReceiver : public BroadcastReceiver<service_signal_t> {
+
 };
 
 #endif

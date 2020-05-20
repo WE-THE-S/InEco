@@ -7,23 +7,37 @@
 #include "../config.hpp"
 #include "../struct/service.hpp"
 #include "../struct/packet.hpp"
+#include "../utils/broadcast.hpp"
 
 class WaterLevel : public Service {
     private:
+        bool lastStatus;
         gpio_num_t pin;
     public:
     WaterLevel(gpio_num_t _pin) : pin(_pin) {
         adc_power_on();
     }
-    WaterLevel() : WaterLevel(WATER_LEVEL_SENSOR_DEFAULT_PIN){}
+    WaterLevel() : WaterLevel(WATER_LEVEL_SENSOR_DEFAULT_PIN){
+
+    }
+
     void execute(){
-        int read_raw;
+        int readRaw;
         ESP_ERROR_CHECK(adc2_config_channel_atten(ADC2_CHANNEL_8, ADC_ATTEN_11db));
-        ESP_ERROR_CHECK(adc2_get_raw(ADC2_CHANNEL_8, ADC_WIDTH_12Bit, &read_raw));
+        ESP_ERROR_CHECK(adc2_get_raw(ADC2_CHANNEL_8, ADC_WIDTH_12Bit, &readRaw));
         adcAttachPin(pin);
-        double bat = static_cast<double>(read_raw);
-        if(read_raw > 400){
-            
+        if(readRaw > WATER_LOW_THRESHOLD && !lastStatus){
+            lastStatus = true;
+            service_signal_t signal;
+            signal.type = SERVICE_SIGNAL_TYPE::ALARM;
+            signal.value = 1ull;
+            Broadcast<service_signal_t>::getInstance()->broadcast(signal);
+        }else if(readRaw <= WATER_LOW_THRESHOLD && lastStatus){
+            lastStatus = false;
+            service_signal_t signal;
+            signal.type = SERVICE_SIGNAL_TYPE::ALARM;
+            signal.value = 0ull;
+            Broadcast<service_signal_t>::getInstance()->broadcast(signal);
         }
     }
 

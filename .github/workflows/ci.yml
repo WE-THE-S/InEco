@@ -16,5 +16,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install platformio
 
-    - name: Run PlatformIO
-      run: platformio ci src/main.cpp --lib="." --board=esp32dev
+    - name: Control Board CI
+      run: platformio ci src/main.cpp --lib="." --board=esp32dev -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0
+
+    - name: LED Board CI
+      run: platformio ci src/main.cpp --lib="." --board=esp32dev -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1

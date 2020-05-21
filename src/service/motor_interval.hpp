@@ -2,6 +2,7 @@
 #define __MOTOR_INTERVAL_HPP__
 
 #include <Arduino.h>
+#include <cmath>
 #include "../struct/packet.hpp"
 #include "../struct/service.hpp"
 #include "../utils/broadcast.hpp"
@@ -65,7 +66,7 @@ class MotorInterval : public Service {
 
             switch(this->lastIntervalStatus){
                 case MOTOR_STATUS::MOTOR_OFF : {
-                    if(requireOnTime > now){
+                    if(requireOnTime <= now){
                         ESP_LOGI(typename(this), "motor interval on %ul", now);
                         this->lastTime = now;
                         this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_ON);
@@ -73,7 +74,7 @@ class MotorInterval : public Service {
                     break;
                 }
                 case MOTOR_STATUS::MOTOR_ON : {
-                    if(requireOffTime > now){
+                    if(requireOffTime <= now){
                         ESP_LOGI(typename(this), "motor interval off %ul", now);
                         this->lastTime = now;
                         this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_OFF);
@@ -93,8 +94,8 @@ class MotorInterval : public Service {
                 this->intervalSpan = signal.intervalSpan;
                 this->intervalTime = signal.intervalTime;
                 if(signal.intervalEnable != this->intervalEnable){
-                    this->lastIntervalStatus = MOTOR_STATUS::MOTOR_OFF;
-                    this->lastTime = (millis() - signal.intervalTime);
+                    this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_OFF);
+                    this->lastTime = min(millis() - signal.intervalTime, 0);
                 }
                 this->intervalEnable = signal.intervalEnable;
                 ESP_LOGI(typename(this), "Enable %u", this->intervalEnable);

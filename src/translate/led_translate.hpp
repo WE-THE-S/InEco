@@ -24,9 +24,14 @@ class LedTranslate : protected Translate {
         if(this->master->available() >= sizeof(device_communication_message_t)){
             auto message = new device_communication_message_t;
             this->master->readBytes(message->bytes, sizeof(device_communication_message_t)); 
+            if(message->getCrc() != message->crc){
+                //CRC 안맞으면 종료
+                return;
+            }
             switch(message->type){
                 case MESSAGE_TYPE::RUN_MOTOR : {
                     this->broadcast(*message);
+                    message->crc = message->getCrc();
                     this->bottom->write(message->bytes, sizeof(device_communication_message_t));
                     this->right->write(message->bytes, sizeof(device_communication_message_t));
                     break;
@@ -37,9 +42,11 @@ class LedTranslate : protected Translate {
                     this->broadcast(*message);
                 }else{
                     led->col -= 1;
+                    message->crc = message->getCrc();
                     this->right->write(message->bytes, sizeof(device_communication_message_t));
                     led->col += 1;
                     led->row -= 1;
+                    message->crc = message->getCrc();
                     this->bottom->write(message->bytes, sizeof(device_communication_message_t));
                 }
                 break;

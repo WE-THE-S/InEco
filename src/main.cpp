@@ -34,7 +34,6 @@ void setup() {
     instance->add(&led);
     instance->add(&motor);
   #elif CONTROL_BOARD == 1
-    Serial.begin(115200);
     WiFi.mode(WIFI_STA);
     WiFi.begin(SSID, PASSWORD);
     while (WiFi.status() != WL_CONNECTED) {

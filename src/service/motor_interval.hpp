@@ -36,23 +36,37 @@ class MotorInterval : public Service {
             const uint64_t const now = millis();
             const auto requireOffTime = this->lastTime + this->intervalSpan;
             const auto requireOnTime = this->lastTime + this->intervalTime;
+            
             service_signal_t signal;
-            signal.type = SERVICE_SIGNAL_TYPE::PACKET_SEND;
+            communcation_service_signal_t com;
             motor_message_t* motorMessage = new motor_message_t;
+
+            signal.type = SERVICE_SIGNAL_TYPE::PACKET_SEND;
+            com.dir = MESSAGE_DIRECTION::TO_SLAVE;
+            com.header |= static_cast<uint8_t>(MESSAGE_TYPE::RUN_MOTOR);
+            com.message = motorMessage;
+
             switch(this->lastIntervalStatus){
                 case MOTOR_STATUS::MOTOR_OFF : {
                     if(requireOnTime > now){
                         motorMessage->status = MOTOR_STATUS::MOTOR_ON;
-                        communcation_service_signal_t communicationSignal;
                         Broadcast<service_signal_t>::getInstance()->broadcast(signal);
+                        this->lastTime = now;
+                        this->lastIntervalStatus = motorMessage->status;
                     }
                     break;
                 }
                 case MOTOR_STATUS::MOTOR_ON : {
-                    
+                    if(requireOffTime > now){
+                        motorMessage->status = MOTOR_STATUS::MOTOR_OFF;
+                        Broadcast<service_signal_t>::getInstance()->broadcast(signal);
+                        this->lastTime = now;
+                        this->lastIntervalStatus = motorMessage->status;
+                    }
                     break;
                 }
             }
+
             delete motorMessage;
         }
     }

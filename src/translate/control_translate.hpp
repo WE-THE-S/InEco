@@ -27,12 +27,10 @@ class ControlTranslate : protected Translate, public ServiceSignalBroadcastRecei
                 communcation_service_signal_t signal;
                 device_communication_message_t packet;
                 
-                uint8_t type = static_cast<uint8_t>(packet.type);
-                uint8_t dir = static_cast<uint8_t>(packet.type);
-                
                 signal.value = message.value;
                 packet.message = *signal.message;
-                packet.header = (type | dir);   
+                packet.type = signal.type;
+                packet.header |= static_cast<uint8_t>(signal.dir);
                 packet.crc = packet.getCrc();
                 
                 this->bottom->write(packet.bytes, sizeof(device_communication_message_t));

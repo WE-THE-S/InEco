@@ -5,7 +5,6 @@
 #include <ESPmDNS.h>
 
 #include "./config.hpp"
-#include "./struct/packet.hpp"
 #include "./handler/led_handler.hpp"
 #include "./handler/motor_handler.hpp"
 #include "./service/alarm.hpp"
@@ -14,6 +13,7 @@
 #include "./utils/broadcast.hpp"
 #include "./translate/led_translate.hpp"
 #include "./translate/control_translate.hpp"
+#include "./struct/packet.hpp"
 #include "./struct/translate.hpp"
 
 #if LED_BOARD == 1
@@ -45,18 +45,49 @@ void setup() {
 
     MDNS.begin("ineco");
 
-    server.on("/motor/on", []() {
-      server.send(200, "text/plain", "hello from esp32!");
+    server.on("/led", []() {
+      server.send(200, "text/html", LED_SET_HTML);
     });
 
-    server.on("/motor/set/{}", []() {
-      String arg = server.pathArg(0);
-      long time = atol(arg.c_str());
-      server.send(200, "text/plain", "User: '" + arg + "'");
+    server.on("/led/power/{}", []() {
+      const String onOff = server.pathArg(0);
+      server.send(200, "text/plain", onOff);
+    });
+
+    server.on("/motor", []() {
+      server.send(200, "text/html", MOTOR_SET_HTML);
+    });
+
+    server.on("/motor/power/{}", []() {
+      const String onOff = server.pathArg(0);
+      service_signal_t signal;
+      motor_interval_service_signal_t message;
+      message.isIntervalSet = false;
+      message.onOff = onOff.equalsIgnoreCase("on");
+      signal.type = SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET;
+      signal.value = message.value;
+      Broadcast<service_signal_t>::getInstance()->broadcast(signal);
+      server.send(200, "text/plain", "ok");
+    });
+
+    server.on("/motor/set?time={}&span={}&enable={}", []() {
+      const String time = server.pathArg(0);
+      const String span = server.pathArg(1);
+      const String enable = server.pathArg(2);
+      service_signal_t signal;
+      motor_interval_service_signal_t message;
+      message.isIntervalSet = true;
+      message.intervalEnable = enable.equalsIgnoreCase("on");
+      message.intervalSpan = static_cast<uint16_t>(atoi(span.c_str()));
+      message.intervalTime = static_cast<uint16_t>(atoi(time.c_str()));
+      signal.type = SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET;
+      signal.value = message.value;
+      Broadcast<service_signal_t>::getInstance()->broadcast(signal);
+      server.send(200, "text/plain", "ok");
     });
   
     server.begin();
-    
+
     auto instance = Broadcast<service_signal_t>::getInstance();
     instance->add(&ledAlarm);
     instance->add(&waterLevel);

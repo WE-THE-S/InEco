@@ -17,7 +17,7 @@ jobs:
         pip install platformio
 
     - name: Control Board CI
-      run: platformio ci src/main.cpp --lib="." --board=esp32dev -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0
+      run: platformio ci src/main.cpp --lib="." --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0"
 
     - name: LED Board CI
-      run: platformio ci src/main.cpp --lib="." --board=esp32dev -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1
+      run: platformio ci src/main.cpp --lib="." --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1"

@@ -15,7 +15,7 @@ class WaterLevel : public Service {
         gpio_num_t pin;
     public:
     WaterLevel(gpio_num_t _pin) : pin(_pin) {
-        
+
     }
     WaterLevel() : WaterLevel(WATER_LEVEL_SENSOR_DEFAULT_PIN){
 
@@ -23,14 +23,15 @@ class WaterLevel : public Service {
 
     void execute(){
         int readRaw = analogRead(this->pin);
-        ESP_LOGI(typename(this), "adc raw : %d", readRaw);
-        if(readRaw > WATER_LOW_THRESHOLD && !lastStatus){
+        if(readRaw < WATER_LOW_THRESHOLD && !lastStatus){
+            ESP_LOGI(typename(this), "adc raw : %d, turn on", readRaw);
             lastStatus = true;
             service_signal_t signal;
             signal.type = SERVICE_SIGNAL_TYPE::ALARM;
             signal.value = 1ull;
             Broadcast<service_signal_t>::getInstance()->broadcast(signal);
-        }else if(readRaw <= WATER_LOW_THRESHOLD && lastStatus){
+        }else if(readRaw >= WATER_LOW_THRESHOLD && lastStatus){
+            ESP_LOGI(typename(this), "adc raw : %d, turn off", readRaw);
             lastStatus = false;
             service_signal_t signal;
             signal.type = SERVICE_SIGNAL_TYPE::ALARM;

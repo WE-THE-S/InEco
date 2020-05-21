@@ -22,6 +22,7 @@ class Alarm : public Service {
 
     void onMessage(const service_signal_t message){
         if(message.type == SERVICE_SIGNAL_TYPE::ALARM){
+            ESP_LOGI(typename(this), "alarm status change : %d", message.value);
             if(message.value){
                 digitalWrite(pin, HIGH);
             }else{

@@ -9,7 +9,7 @@
 
 const uint32_t FW_VERSION = 0;
 const bool IS_DEV = true;
-const unsigned long UART_BAUD_RATE = 3686400ul; //테스트용
+const unsigned long UART_BAUD_RATE = 460800ul; //테스트용
 const uint32_t UART_SERIAL_MODE = SERIAL_8N1;
 
 const gpio_num_t BOTTOM_UART_RX = GPIO_NUM_23;
@@ -20,13 +20,13 @@ const gpio_num_t RIGHT_UART_TX = GPIO_NUM_26;
 const gpio_num_t MOTOR_DEFAULT_PIN = GPIO_NUM_33;
 const gpio_num_t LED_CONTROL_DEFAULT_PIN = GPIO_NUM_32;
 const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_34;
-const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_35;
+const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_21;
 
 const uint16_t MOTOR_DEFAULT_SPAN = 60000u;
 const uint16_t MOTOR_DEFAULT_TIME = 1000u;
 const char *const SSID = "THES3";
 const char *const PASSWORD = "1234123412";
-const int WATER_LOW_THRESHOLD = 300;
+const int WATER_LOW_THRESHOLD = 500;
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \
 <h1>Interval ON/OFF</h1>\

@@ -6,9 +6,9 @@ const uint8_t PACKET_SIZE = 6;
 
 #pragma pack(push, 1)
 enum class MESSAGE_TYPE : uint8_t {
-    SET_COLOR,
-    RUN_MOTOR,
-    GET_SIZE
+    SET_COLOR = 0x1,
+    RUN_MOTOR = 0x2,
+    GET_SIZE = 0x4
 };
 
 enum class MESSAGE_DIRECTION : uint8_t {
@@ -43,9 +43,7 @@ typedef union _led_message_t {
 } led_message_t;
 
 typedef union _motor_message_t {
-    struct {
-        MOTOR_STATUS status;
-    };
+    MOTOR_STATUS status;
     base_message_t message;
 } motor_message_t;
 
@@ -55,15 +53,18 @@ typedef union _motor_message_t {
 typedef union __device_communication_message_t {
     struct{
         union {
-            MESSAGE_TYPE type;
-            MESSAGE_DIRECTION dir;
+            struct{
+                MESSAGE_TYPE type;
+                MESSAGE_DIRECTION dir;
+            };
+            uint8_t header;
         } ;
         base_message_t message;
         uint8_t crc;
     };
     uint8_t bytes[];
     uint8_t getCrc(){
-        uint8_t result = static_cast<uint8_t>(type) ^ message.bytes[0] ^ message.bytes[1] ^ 
+        uint8_t result = header ^ message.bytes[0] ^ message.bytes[1] ^ 
                         message.bytes[2] ^ message.bytes[3] ^ message.bytes[4] ^ message.bytes[5];
         return result;
     }
@@ -90,7 +91,7 @@ typedef union _motor_interval_service_signal_t {
         bool isIntervalSet;
         uint16_t intervalTime;
         uint16_t intervalSpan;
-        bool enable;
+        bool intervalEnable;
         bool onOff;
     };
 } motor_interval_service_signal_t;
@@ -99,8 +100,11 @@ typedef union _communcation_service_signal_t {
     uint64_t value;
     struct{
         union {
-            MESSAGE_TYPE type;
-            MESSAGE_DIRECTION dir;
+            struct{
+                MESSAGE_TYPE type;
+                MESSAGE_DIRECTION dir;
+            };
+            uint8_t header;
         };
         base_message_t* message;
     };

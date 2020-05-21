@@ -26,6 +26,7 @@ class WaterLevel : public Service {
         ESP_ERROR_CHECK(adc2_config_channel_atten(ADC2_CHANNEL_8, ADC_ATTEN_11db));
         ESP_ERROR_CHECK(adc2_get_raw(ADC2_CHANNEL_8, ADC_WIDTH_12Bit, &readRaw));
         adcAttachPin(pin);
+        ESP_LOGI(typename(this), "adc raw : %d", readRaw);
         if(readRaw > WATER_LOW_THRESHOLD && !lastStatus){
             lastStatus = true;
             service_signal_t signal;

@@ -28,7 +28,12 @@ class MotorInterval : public Service {
     public:
 
     MotorInterval() {
-
+        intervalEnable = false;
+        onOff = false;
+        lastIntervalStatus = MOTOR_STATUS::MOTOR_OFF;
+        lastTime = 0;
+        intervalSpan = MOTOR_DEFAULT_SPAN;
+        intervalTime = MOTOR_DEFAULT_TIME;
     }
 
     void execute(){
@@ -41,7 +46,7 @@ class MotorInterval : public Service {
             communcation_service_signal_t com;
             motor_message_t* motorMessage = new motor_message_t;
             auto broadcast = Broadcast<service_signal_t>::getInstance();
-            
+
             signal.type = SERVICE_SIGNAL_TYPE::PACKET_SEND;
             com.dir = MESSAGE_DIRECTION::TO_SLAVE;
             com.header |= static_cast<uint8_t>(MESSAGE_TYPE::RUN_MOTOR);

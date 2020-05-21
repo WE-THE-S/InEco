@@ -22,6 +22,8 @@ const gpio_num_t LED_CONTROL_DEFAULT_PIN = GPIO_NUM_10;
 const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_19;
 const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_21;
 
+const uint16_t MOTOR_DEFAULT_SPAN = 60000u;
+const uint16_t MOTOR_DEFAULT_TIME = 1000u;
 const char *const SSID = "THES3";
 const char *const PASSWORD = "1234123412";
 const int WATER_LOW_THRESHOLD = 300;

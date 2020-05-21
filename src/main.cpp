@@ -5,8 +5,8 @@
 #include <ESPmDNS.h>
 
 #include "./config.hpp"
-#include "./handler/led_handler.hpp"
-#include "./handler/motor_handler.hpp"
+#include "./handler/led/led_handler.hpp"
+#include "./handler/led/motor_handler.hpp"
 #include "./service/alarm.hpp"
 #include "./service/water_level.hpp"
 #include "./service/motor_interval.hpp"
@@ -15,9 +15,6 @@
 #include "./translate/control_translate.hpp"
 #include "./struct/packet.hpp"
 #include "./struct/translate.hpp"
-
-#define LED_BOARD 0
-#define CONTROL_BOARD 1
 
 #if LED_BOARD == 1
   LedHanlder led;
@@ -73,7 +70,7 @@ void setup() {
       signal.type = SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET;
       signal.value = message.value;
       Broadcast<service_signal_t>::getInstance()->broadcast(signal);
-      request->send(200, "text/html", onOff);
+      request->send(200, "text/html", String(message.onOff));
     });
 
     server.on("^\\/motor\\/set\\/enable\\/([a-zA-Z]+)\\/time\\/([0-9]+)\\/span\\/([0-9]+)$", HTTP_GET, [](AsyncWebServerRequest* request) {

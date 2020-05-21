@@ -4,9 +4,9 @@
 #include <Arduino.h>
 #include <queue>
 #include <cstdint>
-#include "../config.hpp"
-#include "../struct/packet.hpp"
-#include "../struct/handler/gpio_handler.hpp"
+#include "../../config.hpp"
+#include "../../struct/packet.hpp"
+#include "../../struct/handler/gpio_handler.hpp"
 
 class MotorHanlder : public MessageGpioControlHandler {
     public:

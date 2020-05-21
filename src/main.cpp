@@ -10,6 +10,7 @@
 #include "./handler/motor_handler.hpp"
 #include "./service/alarm.hpp"
 #include "./service/water_level.hpp"
+#include "./service/motor_interval.hpp"
 #include "./utils/broadcast.hpp"
 #include "./translate/led_translate.hpp"
 #include "./translate/control_translate.hpp"
@@ -23,6 +24,7 @@
   WebServer server(80);
   ControlTranslate translate;
   Alarm ledAlarm;
+  MotorInterval motorInterval;
   WaterLevel waterLevel;
 #endif
 
@@ -54,9 +56,12 @@ void setup() {
     });
   
     server.begin();
+    
     auto instance = Broadcast<service_signal_t>::getInstance();
     instance->add(&ledAlarm);
     instance->add(&waterLevel);
+    instance->add(&translate);
+    instance->add(&motorInterval);
   #endif
 }
 
@@ -66,5 +71,6 @@ void loop() {
   #elif CONTROL_BOARD == 1
     server.handleClient();
     waterLevel.execute();
+    motorInterval.execute();
   #endif
 }

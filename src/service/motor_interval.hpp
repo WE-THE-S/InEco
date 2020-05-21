@@ -33,7 +33,7 @@ class MotorInterval : public Service {
 
     void execute(){
         if(this->intervalEnable){
-            const uint64_t const now = millis();
+            const uint64_t now = millis();
             const auto requireOffTime = this->lastTime + this->intervalSpan;
             const auto requireOnTime = this->lastTime + this->intervalTime;
             
@@ -44,7 +44,7 @@ class MotorInterval : public Service {
             signal.type = SERVICE_SIGNAL_TYPE::PACKET_SEND;
             com.dir = MESSAGE_DIRECTION::TO_SLAVE;
             com.header |= static_cast<uint8_t>(MESSAGE_TYPE::RUN_MOTOR);
-            com.message = motorMessage;
+            com.message = &motorMessage->message;
 
             switch(this->lastIntervalStatus){
                 case MOTOR_STATUS::MOTOR_OFF : {

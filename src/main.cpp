@@ -51,8 +51,9 @@ void setup() {
     MDNS.begin("ineco");
 
     server.onNotFound(notFound);
+
     server.on("^\\/led$", HTTP_GET, [](AsyncWebServerRequest* request) {
-      request->send(200, "text/html", LED_SET_HTML);
+        request->send(200, "text/html", LED_SET_HTML);
     });
 
     server.on("^\\/led\\/power\\/([a-zA-Z]+)$", HTTP_GET, [](AsyncWebServerRequest* request) {

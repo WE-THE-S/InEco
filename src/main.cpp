@@ -51,20 +51,20 @@ void setup() {
     MDNS.begin("ineco");
 
     server.onNotFound(notFound);
-    server.on("/led", [](AsyncWebServerRequest* request) {
+    server.on("^\\/led$", HTTP_GET, [](AsyncWebServerRequest* request) {
       request->send(200, "text/html", LED_SET_HTML);
     });
 
-    server.on("^\\/led\\/power\\/([a-zA-Z]+)$", [](AsyncWebServerRequest* request) {
+    server.on("^\\/led\\/power\\/([a-zA-Z]+)$", HTTP_GET, [](AsyncWebServerRequest* request) {
       const String onOff = request->pathArg(0);
       request->send(200, "text/plain", onOff);
     });
 
-    server.on("/motor", [](AsyncWebServerRequest* request) {
+    server.on("^\\/motor$", HTTP_GET, [](AsyncWebServerRequest* request) {
       request->send(200, "text/html", MOTOR_SET_HTML);
     });
 
-    server.on("^\\/motor\\/power\\/([a-zA-Z]+)$", [](AsyncWebServerRequest* request) {
+    server.on("^\\/motor\\/power\\/([a-zA-Z]+)$", HTTP_GET, [](AsyncWebServerRequest* request) {
       const String onOff = request->pathArg(0);
       service_signal_t signal;
       motor_interval_service_signal_t message;
@@ -76,10 +76,10 @@ void setup() {
       request->send(200, "text/html", onOff);
     });
 
-    server.on("^\\/motor\\/set\\/time\\/([0-9]+)\\/span\\/([0-9]+)\\/enable\\/([a-zA-Z]+)$", [](AsyncWebServerRequest* request) {
-      const String time = request->pathArg(0);
-      const String span = request->pathArg(1);
-      const String enable = request->pathArg(2);
+    server.on("^\\/motor\\/set\\/enable\\/([a-zA-Z]+)\\/time\\/([0-9]+)\\/span\\/([0-9]+)$", HTTP_GET, [](AsyncWebServerRequest* request) {
+      const String enable = request->pathArg(0);
+      const String time = request->pathArg(1);
+      const String span = request->pathArg(2);
       service_signal_t signal;
       motor_interval_service_signal_t message;
       message.isIntervalSet = true;

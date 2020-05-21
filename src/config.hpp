@@ -68,7 +68,7 @@ const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
   const on = document.getElementById('on');\
   const off = document.getElementById('off');\
   set.addEventListener('click', function(){\
-	request(`motor/set?enable=${enable.value}&time=${time.value}&span=${span.value}`);\
+	request(`motor/set/enable/${enable.value}/time/${time.value}/span/${span.value}`);\
   });\
   on.addEventListener('click', function(){\
 	request('motor/power/on');\

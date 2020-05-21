@@ -16,6 +16,9 @@
 #include "./struct/packet.hpp"
 #include "./struct/translate.hpp"
 
+#define CONTROL_BOARD 1
+#define LED_BOARD 0
+
 #if LED_BOARD == 1
   LedHanlder led;
   MotorHanlder motor;

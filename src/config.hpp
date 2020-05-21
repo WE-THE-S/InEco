@@ -27,6 +27,7 @@ const uint16_t MOTOR_DEFAULT_TIME = 1000u;
 const char *const SSID = "THES3";
 const char *const PASSWORD = "1234123412";
 const int WATER_LOW_THRESHOLD = 500;
+
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \
 <h1>Interval ON/OFF</h1>\

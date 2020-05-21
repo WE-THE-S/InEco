@@ -67,7 +67,7 @@ class MotorInterval : public Service {
             switch(this->lastIntervalStatus){
                 case MOTOR_STATUS::MOTOR_OFF : {
                     if(requireOnTime <= now){
-                        ESP_LOGI(typename(this), "motor interval on %ul", now);
+                        ESP_LOGI(typename(this), "motor interval on %u", now);
                         this->lastTime = now;
                         this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_ON);
                     }
@@ -75,7 +75,7 @@ class MotorInterval : public Service {
                 }
                 case MOTOR_STATUS::MOTOR_ON : {
                     if(requireOffTime <= now){
-                        ESP_LOGI(typename(this), "motor interval off %ul", now);
+                        ESP_LOGI(typename(this), "motor interval off %u", now);
                         this->lastTime = now;
                         this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_OFF);
                     }

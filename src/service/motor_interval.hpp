@@ -95,7 +95,7 @@ class MotorInterval : public Service {
                 this->intervalTime = signal.intervalTime;
                 if(signal.intervalEnable != this->intervalEnable){
                     this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_OFF);
-                    this->lastTime = min(millis() - signal.intervalTime, 0);
+                    this->lastTime = min(millis() - signal.intervalTime, 0ul);
                 }
                 this->intervalEnable = signal.intervalEnable;
                 ESP_LOGI(typename(this), "Enable %u", this->intervalEnable);

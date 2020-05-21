@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include <WiFiClient.h>
-#include <WebServer.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 #include <ESPmDNS.h>
 
 #include "./config.hpp"
@@ -16,16 +16,22 @@
 #include "./struct/packet.hpp"
 #include "./struct/translate.hpp"
 
+#define LED_BOARD 0
+#define CONTROL_BOARD 1
+
 #if LED_BOARD == 1
   LedHanlder led;
   MotorHanlder motor;
   LedTranslate translate;
 #elif CONTROL_BOARD == 1
-  WebServer server(80);
+  AsyncWebServer server(80);
   ControlTranslate translate;
   Alarm ledAlarm;
   MotorInterval motorInterval;
   WaterLevel waterLevel;
+  void notFound(AsyncWebServerRequest* request){
+    request->send(404, "text/html", "not found");
+  }
 #endif
 
 void setup() {
@@ -44,21 +50,22 @@ void setup() {
 
     MDNS.begin("ineco");
 
-    server.on("/led", []() {
-      server.send(200, "text/html", LED_SET_HTML);
+    server.onNotFound(notFound);
+    server.on("/led", [](AsyncWebServerRequest* request) {
+      request->send(200, "text/html", LED_SET_HTML);
     });
 
-    server.on("/led/power/{}", []() {
-      const String onOff = server.pathArg(0);
-      server.send(200, "text/plain", onOff);
+    server.on("^\\/led\\/power\\/([a-zA-Z]+)$", [](AsyncWebServerRequest* request) {
+      const String onOff = request->pathArg(0);
+      request->send(200, "text/plain", onOff);
     });
 
-    server.on("/motor", []() {
-      server.send(200, "text/html", MOTOR_SET_HTML);
+    server.on("/motor", [](AsyncWebServerRequest* request) {
+      request->send(200, "text/html", MOTOR_SET_HTML);
     });
 
-    server.on("/motor/power/{}", []() {
-      const String onOff = server.pathArg(0);
+    server.on("^\\/motor\\/power\\/([a-zA-Z]+)$", [](AsyncWebServerRequest* request) {
+      const String onOff = request->pathArg(0);
       service_signal_t signal;
       motor_interval_service_signal_t message;
       message.isIntervalSet = false;
@@ -66,13 +73,13 @@ void setup() {
       signal.type = SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET;
       signal.value = message.value;
       Broadcast<service_signal_t>::getInstance()->broadcast(signal);
-      server.send(200, "text/plain", "ok");
+      request->send(200, "text/html", onOff);
     });
 
-    server.on("/motor/set?time={}&span={}&enable={}", []() {
-      const String time = server.pathArg(0);
-      const String span = server.pathArg(1);
-      const String enable = server.pathArg(2);
+    server.on("^\\/motor\\/set\\/time\\/([0-9]+)\\/span\\/([0-9]+)\\/enable\\/([a-zA-Z]+)$", [](AsyncWebServerRequest* request) {
+      const String time = request->pathArg(0);
+      const String span = request->pathArg(1);
+      const String enable = request->pathArg(2);
       service_signal_t signal;
       motor_interval_service_signal_t message;
       message.isIntervalSet = true;
@@ -82,7 +89,7 @@ void setup() {
       signal.type = SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET;
       signal.value = message.value;
       Broadcast<service_signal_t>::getInstance()->broadcast(signal);
-      server.send(200, "text/plain", "ok");
+      request->send(200, "text/plain", enable);
     });
   
     server.begin();
@@ -99,7 +106,6 @@ void loop() {
   #if LED_BOARD == 1
     translate.recv();
   #elif CONTROL_BOARD == 1
-    server.handleClient();
     waterLevel.execute();
     motorInterval.execute();
   #endif

@@ -22,6 +22,12 @@ const gpio_num_t LED_CONTROL_DEFAULT_PIN = GPIO_NUM_32;
 const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_34;
 const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_21;
 
+const gpio_num_t OLED_DIN_PIN = GPIO_NUM_17;
+const gpio_num_t OLED_CLK_PIN = GPIO_NUM_18;
+const gpio_num_t OLED_CS_PIN = GPIO_NUM_14;
+const gpio_num_t OLED_DC_PIN = GPIO_NUM_5;
+const gpio_num_t OLED_RESET_PIN = GPIO_NUM_19;
+
 const uint16_t MOTOR_DEFAULT_SPAN = 60000u;
 const uint16_t MOTOR_DEFAULT_TIME = 1000u;
 const char *const SSID = "THES3";

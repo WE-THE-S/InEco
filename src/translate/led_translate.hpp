@@ -17,7 +17,6 @@ class LedTranslate : protected Translate {
     }
 
     LedTranslate() : Translate() {
-
     }
 
     void recv(){

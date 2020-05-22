@@ -20,7 +20,6 @@ class Translate{
     }
 
     Translate() : Translate(&Serial, &RightSerial, &BottomSerial) {
-
     }
 
     ~Translate(){

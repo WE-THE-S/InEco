@@ -1,8 +1,4 @@
 #include <Arduino.h>
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <ESPmDNS.h>
 #include "./config.hpp"
 #include "./handler/led/led_handler.hpp"
 #include "./handler/led/motor_handler.hpp"
@@ -11,17 +7,22 @@
 #include "./service/motor_interval.hpp"
 #include "./service/lcd.hpp"
 #include "./utils/broadcast.hpp"
-#include "./translate/led_translate.hpp"
-#include "./translate/control_translate.hpp"
 #include "./struct/packet.hpp"
 #include "./struct/translate.hpp"
 
 
 #if LED_BOARD == 1
+  #include "./translate/led_translate.hpp"
   LedHanlder led;
   MotorHanlder motor;
   LedTranslate translate;
 #elif CONTROL_BOARD == 1
+  #include <WiFi.h>
+  #include <AsyncTCP.h>
+  #include <ESPAsyncWebServer.h>
+  #include <ESPmDNS.h>
+  #include "./translate/control_translate.hpp"
+
   AsyncWebServer server(80);
   ControlTranslate translate;
   Alarm ledAlarm;

@@ -5,7 +5,6 @@
 #include "./service/alarm.hpp"
 #include "./service/water_level.hpp"
 #include "./service/motor_interval.hpp"
-#include "./service/lcd.hpp"
 #include "./utils/broadcast.hpp"
 #include "./struct/packet.hpp"
 #include "./struct/translate.hpp"
@@ -17,6 +16,7 @@
   MotorHanlder motor;
   LedTranslate translate;
 #elif CONTROL_BOARD == 1
+  #include "./service/lcd.hpp"
   #include <WiFi.h>
   #include <AsyncTCP.h>
   #include <ESPAsyncWebServer.h>

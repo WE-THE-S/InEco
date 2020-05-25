@@ -93,6 +93,7 @@ void setup() {
     });
   
     server.begin();
+    lcd.execute();
 
     auto instance = Broadcast<service_signal_t>::getInstance();
     instance->add(&ledAlarm);

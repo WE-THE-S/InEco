@@ -4,12 +4,13 @@
 #include "../struct/packet.hpp"
 #include "../struct/service.hpp"
 #include "../utils/broadcast.hpp"
+#include "../config.hpp"
 #include <Arduino.h>
 #include <U8g2lib.h>
 #include <cmath>
 #include <cstdlib>
 
-static U8G2_SSD1327_WS_128X128_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/OLED_CS_PIN, /* dc=*/OLED_DC_PIN, /* reset=*/OLED_RESET_PIN);
+U8G2_SSD1327_WS_128X128_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/OLED_CS_PIN, /* dc=*/OLED_DC_PIN, /* reset=*/OLED_RESET_PIN);
 
 class LCD : public Service {
 private:
@@ -26,8 +27,8 @@ private:
 	bool onOff;
 
 	bool ledOn;
-
-	char buffer[32] = {
+	
+    char buffer[32] = {
 		0,
 	};
 
@@ -47,10 +48,9 @@ public:
         ledOn = false;
         intervalSpan = MOTOR_DEFAULT_SPAN;
         intervalTime = MOTOR_DEFAULT_TIME;
+    }
+    void execute(){
         u8g2.begin();
-        u8g2.setDrawColor(2);
-        u8g2.setFontMode(2);
-        u8g2.setFontDirection(0);
     }
 
     void onMessage(const service_signal_t message) {
@@ -86,9 +86,13 @@ public:
             }
         }
         if(isSet) {
+            u8g2.clearBuffer();
+            u8g2.setDrawColor(2);
+            u8g2.setFontMode(2);
+            u8g2.setFontDirection(0);
             u8g2.setFont(u8g2_font_profont22_tr);
             u8g2.drawStr(0, 22, "Motor");
-            u8g2.drawStr(0, 105, "LED");
+            u8g2.drawStr(0, 105, "Alarm");
             u8g2.setFont(u8g2_font_profont15_tr);
             this->messageBuilder("Interval", this->intervalEnable ? "Enable" : "Disable");
             u8g2.drawStr(0, 37, buffer);

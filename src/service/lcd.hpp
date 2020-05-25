@@ -54,7 +54,7 @@ public:
     }
 
     void onMessage(const service_signal_t message) {
-        bool isSet = trues;
+        bool isSet = true;
         switch (message.type) {
             case SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET: {
                 motor_interval_service_signal_t signal;

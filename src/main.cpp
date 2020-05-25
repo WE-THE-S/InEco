@@ -3,14 +3,13 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ESPmDNS.h>
-#include <U8g2lib.h>
-
 #include "./config.hpp"
 #include "./handler/led/led_handler.hpp"
 #include "./handler/led/motor_handler.hpp"
 #include "./service/alarm.hpp"
 #include "./service/water_level.hpp"
 #include "./service/motor_interval.hpp"
+#include "./service/lcd.hpp"
 #include "./utils/broadcast.hpp"
 #include "./translate/led_translate.hpp"
 #include "./translate/control_translate.hpp"
@@ -23,10 +22,10 @@
   MotorHanlder motor;
   LedTranslate translate;
 #elif CONTROL_BOARD == 1
-  U8G2_SSD1327_WS_128X128_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/OLED_CS_PIN, /* dc=*/OLED_DC_PIN, /* reset=*/OLED_RESET_PIN);
   AsyncWebServer server(80);
   ControlTranslate translate;
   Alarm ledAlarm;
+  LCD lcd;
   MotorInterval motorInterval;
   WaterLevel waterLevel;
   void notFound(AsyncWebServerRequest* request){
@@ -47,15 +46,6 @@ void setup() {
     }
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
-    u8g2.begin();
-
-		u8g2.setDrawColor(2);
-		u8g2.setFontMode(2);
-		u8g2.setFontDirection(0);
-		u8g2.clearBuffer();
-		u8g2.setFont(u8g2_font_fub25_tr);
-    u8g2.drawStr(80, 40, "Hello");
-    u8g2.sendBuffer();
 
     MDNS.begin("ineco");
 
@@ -109,6 +99,7 @@ void setup() {
     instance->add(&waterLevel);
     instance->add(&translate);
     instance->add(&motorInterval);
+    instance->add(&lcd);
   #endif
 }
 

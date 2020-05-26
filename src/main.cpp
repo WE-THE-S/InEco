@@ -106,9 +106,8 @@ void setup() {
 }
 
 void loop() {
-  #if LED_BOARD == 1
-    translate.recv();
-  #elif CONTROL_BOARD == 1
+  translate.recv();
+  #if CONTROL_BOARD == 1
     waterLevel.execute();
     motorInterval.execute();
   #endif

@@ -27,16 +27,17 @@ class MotorInterval : public Service {
         //onOff
         bool onOff;
 
-        MOTOR_STATUS sendMessage(MOTOR_STATUS status){
+        MOTOR_STATUS sendMessage(const MOTOR_STATUS status) const {
             service_signal_t signal;
             communcation_service_signal_t com;
             motor_message_t* motorMessage = new motor_message_t;
+            memset(motorMessage->message.bytes, 0x00, sizeof(motor_message_t));
             auto broadcast = Broadcast<service_signal_t>::getInstance();
             
-            motorMessage->status = MOTOR_STATUS::MOTOR_ON;
+            motorMessage->status = status;
 
             com.dir = MESSAGE_DIRECTION::TO_SLAVE;
-            com.header |= static_cast<uint8_t>(MESSAGE_TYPE::RUN_MOTOR);
+            com.type = MESSAGE_TYPE::RUN_MOTOR;
             com.message = &motorMessage->message;
             
             signal.value = com.value;

@@ -23,32 +23,26 @@ class LedTranslate : protected Translate {
         if(this->master->available() >= sizeof(device_communication_message_t)){
             auto message = new device_communication_message_t;
             this->master->readBytes(message->bytes, sizeof(device_communication_message_t)); 
-            if(message->getCrc() != message->crc){
-                //CRC 안맞으면 종료
-                return;
-            }
+            this->broadcast(*message);
+            ESP_LOGI(typename(this), "Packet : %s", bytesToHex(message->bytes, sizeof(device_communication_message_t)).c_str());
             switch(message->type){
                 case MESSAGE_TYPE::RUN_MOTOR : {
-                    this->broadcast(*message);
-                    message->crc = message->getCrc();
                     this->bottom->write(message->bytes, sizeof(device_communication_message_t));
                     this->right->write(message->bytes, sizeof(device_communication_message_t));
                     break;
                 }
                 case MESSAGE_TYPE::SET_COLOR : {
-                auto led = reinterpret_cast<led_message_t*>(&(message->message));
-                if((led->row == 0) && (led->col == 0)){
-                    this->broadcast(*message);
-                }else{
-                    led->col -= 1;
-                    message->crc = message->getCrc();
-                    this->right->write(message->bytes, sizeof(device_communication_message_t));
-                    led->col += 1;
-                    led->row -= 1;
-                    message->crc = message->getCrc();
-                    this->bottom->write(message->bytes, sizeof(device_communication_message_t));
-                }
-                break;
+                    auto led = reinterpret_cast<led_message_t*>(&(message->message));
+                    if(led->col > 0){
+                        led->col -= 1;
+                        this->right->write(message->bytes, sizeof(device_communication_message_t));
+                        led->col += 1;
+                    }
+                    if(led->row > 0){
+                        led->row -= 1;
+                        this->bottom->write(message->bytes, sizeof(device_communication_message_t));
+                    }
+                    break;
                 }
                 default : break;
             }

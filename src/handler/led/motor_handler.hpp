@@ -29,7 +29,9 @@ class MotorHanlder : public MessageGpioControlHandler {
                 }
                 case MOTOR_STATUS::MOTOR_ON :{
                     digitalWrite(this->pin, HIGH);
+                    break;
                 }
+                default : break;
             }
         }
     }

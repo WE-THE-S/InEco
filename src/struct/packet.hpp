@@ -52,22 +52,11 @@ typedef union _motor_message_t {
  **/
 typedef union __device_communication_message_t {
     struct{
-        union {
-            struct{
-                MESSAGE_TYPE type;
-                MESSAGE_DIRECTION dir;
-            };
-            uint8_t header;
-        } ;
+        MESSAGE_TYPE type;
+        MESSAGE_DIRECTION dir;
         base_message_t message;
-        uint8_t crc;
     };
     uint8_t bytes[];
-    uint8_t getCrc(){
-        uint8_t result = header ^ message.bytes[0] ^ message.bytes[1] ^ 
-                        message.bytes[2] ^ message.bytes[3] ^ message.bytes[4] ^ message.bytes[5];
-        return result;
-    }
 } device_communication_message_t;
 
 enum class SERVICE_SIGNAL_TYPE : uint8_t {

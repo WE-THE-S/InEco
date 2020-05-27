@@ -27,20 +27,19 @@ class LedTranslate : protected Translate {
             ESP_LOGI(typename(this), "Packet : %s", bytesToHex(message->bytes, sizeof(device_communication_message_t)).c_str());
             switch(message->type){
                 case MESSAGE_TYPE::RUN_MOTOR : {
-                    this->bottom->write(message->bytes, sizeof(device_communication_message_t));
-                    this->right->write(message->bytes, sizeof(device_communication_message_t));
+                    send(message);
                     break;
                 }
                 case MESSAGE_TYPE::SET_COLOR : {
                     auto led = reinterpret_cast<led_message_t*>(&(message->message));
                     if(led->col > 0){
                         led->col -= 1;
-                        this->right->write(message->bytes, sizeof(device_communication_message_t));
+                        rightSend(message);
                         led->col += 1;
                     }
                     if(led->row > 0){
                         led->row -= 1;
-                        this->bottom->write(message->bytes, sizeof(device_communication_message_t));
+                        bottomSend(message);
                     }
                     break;
                 }
@@ -48,10 +47,6 @@ class LedTranslate : protected Translate {
             }
             delete message;
         }
-    }
-
-    void send(){
-        
     }
 };
 

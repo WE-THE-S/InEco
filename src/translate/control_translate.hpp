@@ -42,8 +42,7 @@ class ControlTranslate : protected Translate, public ServiceSignalBroadcastRecei
                 packet.type = signal.type;
                 packet.dir = signal.dir;
                 ESP_LOGI(typename(this), "Hex : %s", bytesToHex(packet.bytes, sizeof(device_communication_message_t)).c_str());
-                this->bottom->write(packet.bytes, sizeof(device_communication_message_t));
-                this->right->write(packet.bytes, sizeof(device_communication_message_t));
+                send(packet);
             }
         }
 };

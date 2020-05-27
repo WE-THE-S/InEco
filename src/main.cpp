@@ -61,6 +61,11 @@ void setup() {
       request->send(200, "text/plain", onOff);
     });
 
+    server.on("^\\/restart$", HTTP_GET, [](AsyncWebServerRequest* request) {
+      request->send(200, "text/html", "restart");
+      ESP.restart();
+    });
+
     server.on("^\\/motor$", HTTP_GET, [](AsyncWebServerRequest* request) {
       request->send(200, "text/html", MOTOR_SET_HTML);
     });

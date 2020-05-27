@@ -12,10 +12,6 @@ class LedTranslate : protected Translate {
     }
 
     public:
-    LedTranslate(HardwareSerial* _master, HardwareSerial* _right, HardwareSerial* _bottom) : 
-        Translate(_master, _right, _bottom) {
-    }
-
     LedTranslate() : Translate() {
     }
 

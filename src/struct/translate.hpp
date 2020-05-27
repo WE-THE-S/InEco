@@ -5,6 +5,7 @@
 #include "../utils/broadcast.hpp"
 #include "./packet.hpp"
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 
 class Translate {
 protected:
@@ -29,7 +30,7 @@ protected:
     }
 
     inline void rightSend(device_communication_message_t packet){
-        this->bottom->write(packet.bytes, sizeof(device_communication_message_t));
+        this->right->write(packet.bytes, sizeof(device_communication_message_t));
     }
 
     inline void bottomSend(device_communication_message_t* packet){
@@ -48,16 +49,16 @@ protected:
         rightSend(packet);
         bottomSend(packet);
     }
-    
+	
 public:
-	Translate(HardwareSerial *_master, HardwareSerial *_right, HardwareSerial *_bottom)
-		: master(_master), right(_right), bottom(_bottom) {
-		this->master->begin(UART_BAUD_RATE);
-		this->bottom->begin(UART_BAUD_RATE, UART_SERIAL_MODE, BOTTOM_UART_RX, BOTTOM_UART_TX);
-		this->right->begin(UART_BAUD_RATE, UART_SERIAL_MODE, RIGHT_UART_RX, RIGHT_UART_TX);
-	}
+	Translate() {
+		Serial2.begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, RIGHT_UART_RX, RIGHT_UART_TX);
+		Serial1.begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, BOTTOM_UART_RX, BOTTOM_UART_TX);
+		Serial.begin(HARDWARE_UART_BAUDRATE);
 
-	Translate() : Translate(&Serial, &RightSerial, &BottomSerial) {
+		this->master = &Serial;
+		this->bottom = &Serial1;
+		this->right = &Serial2;
 	}
 
 	~Translate() {

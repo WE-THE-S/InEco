@@ -1,21 +1,20 @@
 #ifndef __CONFIG_HPP__
 #define __CONFIG_HPP__
 
+#include <SoftwareSerial.h>
 #include <Arduino.h>
-
-//uart 통신용
-#define BottomSerial Serial1
-#define RightSerial Serial2
 
 const uint32_t FW_VERSION = 0;
 const bool IS_DEV = true;
-const unsigned long UART_BAUD_RATE = 460800ul; //테스트용
-const uint32_t UART_SERIAL_MODE = SERIAL_8N1;
+const unsigned long SOFTWARE_UART_BAUDRATE = 460800;
+const unsigned long HARDWARE_UART_BAUDRATE = SOFTWARE_UART_BAUDRATE; //테스트용
+const uint32_t HARDWARE_UART_SERIAL_MODE = SERIAL_8N1;
+const SoftwareSerialConfig SOFTWARE_UART_SERIAL_MODE = SWSERIAL_8N1;
 
-const gpio_num_t BOTTOM_UART_RX = GPIO_NUM_27;
-const gpio_num_t BOTTOM_UART_TX = GPIO_NUM_26;
-const gpio_num_t RIGHT_UART_RX = GPIO_NUM_25;
-const gpio_num_t RIGHT_UART_TX = GPIO_NUM_33;
+const gpio_num_t BOTTOM_UART_RX = GPIO_NUM_14;
+const gpio_num_t BOTTOM_UART_TX = GPIO_NUM_27;
+const gpio_num_t RIGHT_UART_RX = GPIO_NUM_26;
+const gpio_num_t RIGHT_UART_TX = GPIO_NUM_25;
 
 const gpio_num_t MOTOR_DEFAULT_PIN = GPIO_NUM_32;
 const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_34;
@@ -23,7 +22,7 @@ const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_13;
 const gpio_num_t LED_CONTROL_DEFAULT_PIN = ALARM_LED_DEFAULT_PIN;
 
 const gpio_num_t OLED_CLK_PIN = GPIO_NUM_18;
-const gpio_num_t OLED_CS_PIN = GPIO_NUM_14;
+const gpio_num_t OLED_CS_PIN = GPIO_NUM_12;
 const gpio_num_t OLED_DC_PIN = GPIO_NUM_17;
 const gpio_num_t OLED_RESET_PIN = GPIO_NUM_19;
 

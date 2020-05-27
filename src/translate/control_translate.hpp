@@ -7,11 +7,6 @@
 #include "../struct/broadcast/service_signal_receiver.hpp"
 
 class ControlTranslate : protected Translate, public ServiceSignalBroadcastReceiver {
-    protected:
-        void send(){
-
-        }
-        
     public:
         void recv(){
             if(this->bottom->available()){
@@ -22,10 +17,6 @@ class ControlTranslate : protected Translate, public ServiceSignalBroadcastRecei
                 auto str = this->right->readString();
                 ESP_LOGI(typename(this), "Right : %s", str.c_str());
             }
-        }
-
-        ControlTranslate(HardwareSerial* _master, HardwareSerial* _right, HardwareSerial* _bottom) : 
-            Translate(_master, _right, _bottom) {
         }
 
         ControlTranslate() : Translate() {

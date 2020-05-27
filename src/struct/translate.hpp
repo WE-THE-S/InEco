@@ -43,8 +43,8 @@ protected:
     
     inline void send(device_communication_message_t* packet){
         send(*packet);
-    }
-
+	}
+	
     void send(device_communication_message_t packet){
         rightSend(packet);
         bottomSend(packet);
@@ -52,10 +52,6 @@ protected:
 	
 public:
 	Translate() {
-		Serial2.begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, RIGHT_UART_RX, RIGHT_UART_TX);
-		Serial1.begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, BOTTOM_UART_RX, BOTTOM_UART_TX);
-		Serial.begin(HARDWARE_UART_BAUDRATE);
-
 		this->master = &Serial;
 		this->bottom = &Serial1;
 		this->right = &Serial2;
@@ -67,6 +63,12 @@ public:
 		bottom->flush();
 	}
 
+	void begin(){
+		this->right->begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, RIGHT_UART_RX, RIGHT_UART_TX);
+		this->bottom->begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, BOTTOM_UART_RX, BOTTOM_UART_TX);
+		this->master->begin(HARDWARE_UART_BAUDRATE);
+	}
+	
 	virtual void recv() {
 		ESP_LOGE(typename(this), "No configure recv");
 	}

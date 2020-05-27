@@ -35,6 +35,7 @@
 #endif
 
 void setup() {
+  translate.begin();
   #if LED_BOARD == 1
     auto instance = Broadcast<device_communication_message_t>::getInstance();
     instance->add(&led);
@@ -43,6 +44,8 @@ void setup() {
   #elif CONTROL_BOARD == 1
     WiFi.mode(WIFI_STA);
     WiFi.begin(SSID, PASSWORD);
+    pinMode(SLAVE_ENABLE_PIN, OUTPUT);
+    digitalWrite(SLAVE_ENABLE_PIN, LOW);
     while (WiFi.status() != WL_CONNECTED) {
       delay(100);
     }
@@ -108,6 +111,7 @@ void setup() {
     instance->add(&translate);
     instance->add(&motorInterval);
     instance->add(&lcd);
+    digitalWrite(SLAVE_ENABLE_PIN, HIGH);
   #endif
 }
 

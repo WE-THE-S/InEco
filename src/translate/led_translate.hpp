@@ -5,7 +5,7 @@
 #include "../struct/packet.hpp"
 #include "../struct/translate.hpp"
 
-class LedTranslate : protected Translate {
+class LedTranslate : public Translate {
     protected:
     void broadcast(const device_communication_message_t message){
         Broadcast<device_communication_message_t>::getInstance()->broadcast(message);

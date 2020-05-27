@@ -6,7 +6,7 @@
 #include "../struct/translate.hpp"
 #include "../struct/broadcast/service_signal_receiver.hpp"
 
-class ControlTranslate : protected Translate, public ServiceSignalBroadcastReceiver {
+class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver {
     public:
         void recv(){
             if(this->bottom->available()){

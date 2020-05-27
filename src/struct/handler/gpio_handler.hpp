@@ -10,7 +10,7 @@ class MessageGpioControlHandler : public MessageBroadcastReceiver{
         gpio_num_t pin;
     
     public:
-        MessageGpioControlHandler(gpio_num_t _pin) : pin(_pin) {
+        MessageGpioControlHandler(const gpio_num_t _pin) : pin(_pin) {
             pinMode(_pin, OUTPUT);
         }
         

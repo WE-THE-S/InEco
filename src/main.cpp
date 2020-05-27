@@ -39,6 +39,7 @@ void setup() {
     auto instance = Broadcast<device_communication_message_t>::getInstance();
     instance->add(&led);
     instance->add(&motor);
+    ESP_LOGI(typename(this), "Start");
   #elif CONTROL_BOARD == 1
     WiFi.mode(WIFI_STA);
     WiFi.begin(SSID, PASSWORD);

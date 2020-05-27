@@ -27,7 +27,7 @@ protected:
     inline void rightSend(device_communication_message_t* packet){
         rightSend(*packet);
     }
-    
+
     inline void rightSend(device_communication_message_t packet){
         this->bottom->write(packet.bytes, sizeof(device_communication_message_t));
     }
@@ -68,10 +68,6 @@ public:
 
 	virtual void recv() {
 		ESP_LOGE(typename(this), "No configure recv");
-	}
-
-	virtual void send() {
-		ESP_LOGE(typename(this), "No configure send");
 	}
 };
 #endif

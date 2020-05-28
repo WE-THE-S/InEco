@@ -41,6 +41,28 @@ private:
 		sprintf(buffer, "%s : %d%s", key, value, valueType);
 	}
 
+    void display(){
+        u8g2.clearBuffer();
+        u8g2.setDrawColor(2);
+        u8g2.setFontMode(2);
+        u8g2.setFontDirection(0);
+        u8g2.setFont(u8g2_font_profont22_tr);
+        u8g2.drawStr(0, 22, "Motor");
+        u8g2.drawStr(0, 105, "Alarm");
+        u8g2.setFont(u8g2_font_profont15_tr);
+        this->messageBuilder("Interval", this->intervalEnable ? "Enable" : "Disable");
+        u8g2.drawStr(0, 37, buffer);
+        this->messageBuilder("Span", this->intervalSpan, "ms");
+        u8g2.drawStr(0, 52, buffer);
+        this->messageBuilder("Time", this->intervalTime, "ms");
+        u8g2.drawStr(0, 67, buffer);
+        this->messageBuilder("Status", this->onOff ? "ON" : "OFF");
+        u8g2.drawStr(0, 82, buffer);
+        this->messageBuilder("Status", this->ledOn ? "ON" : "OFF");
+        u8g2.drawStr(0, 120, buffer);
+        u8g2.sendBuffer();
+    }
+
 public:
     LCD() {
         intervalEnable = false;
@@ -51,6 +73,7 @@ public:
     }
     void execute(){
         u8g2.begin();
+        this->display();
     }
 
     void onMessage(const service_signal_t message) {
@@ -86,25 +109,7 @@ public:
             }
         }
         if(isSet) {
-            u8g2.clearBuffer();
-            u8g2.setDrawColor(2);
-            u8g2.setFontMode(2);
-            u8g2.setFontDirection(0);
-            u8g2.setFont(u8g2_font_profont22_tr);
-            u8g2.drawStr(0, 22, "Motor");
-            u8g2.drawStr(0, 105, "Alarm");
-            u8g2.setFont(u8g2_font_profont15_tr);
-            this->messageBuilder("Interval", this->intervalEnable ? "Enable" : "Disable");
-            u8g2.drawStr(0, 37, buffer);
-            this->messageBuilder("Span", this->intervalSpan, "ms");
-            u8g2.drawStr(0, 52, buffer);
-            this->messageBuilder("Time", this->intervalTime, "ms");
-            u8g2.drawStr(0, 67, buffer);
-            this->messageBuilder("Status", this->onOff ? "ON" : "OFF");
-            u8g2.drawStr(0, 82, buffer);
-            this->messageBuilder("Status", this->ledOn ? "ON" : "OFF");
-            u8g2.drawStr(0, 120, buffer);
-            u8g2.sendBuffer();
+            this->display();
         }
     }
 };

@@ -22,8 +22,13 @@ class LedTranslate : public Translate {
             this->broadcast(*message);
             ESP_LOGI(typename(this), "Packet : %s", bytesToHex(message->bytes, sizeof(device_communication_message_t)).c_str());
             switch(message->type){
-                case MESSAGE_TYPE::RUN_MOTOR : {
+                case MESSAGE_TYPE::RUN_MOTOR : 
+                case MESSAGE_TYPE::MODULE_RESTART : {
                     send(message);
+                    if(message->type == MESSAGE_TYPE::MODULE_RESTART){
+                        delay(1);
+                        ESP.restart();
+                    }
                     break;
                 }
                 case MESSAGE_TYPE::SET_COLOR : {

@@ -9,7 +9,6 @@
 #include "./struct/packet.hpp"
 #include "./struct/translate.hpp"
 
-
 #if LED_BOARD == 1
   #include "./translate/led_translate.hpp"
   LedHanlder led;
@@ -33,7 +32,6 @@
     request->send(404, "text/html", "not found");
   }
 #endif
-
 void setup() {
   translate.begin();
   #if LED_BOARD == 1
@@ -42,10 +40,10 @@ void setup() {
     instance->add(&motor);
     ESP_LOGI(typename(this), "Start");
   #elif CONTROL_BOARD == 1
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(SSID, PASSWORD);
     pinMode(SLAVE_ENABLE_PIN, OUTPUT);
     digitalWrite(SLAVE_ENABLE_PIN, LOW);
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(SSID, PASSWORD);
     while (WiFi.status() != WL_CONNECTED) {
       delay(100);
     }
@@ -65,8 +63,24 @@ void setup() {
       request->send(200, "text/plain", onOff);
     });
 
+    server.on("^\\/init$", HTTP_GET, [](AsyncWebServerRequest* request) {
+      request->send(200, "text/html", request->url());
+      service_signal_t signal;
+      communcation_service_signal_t com;
+      motor_message_t* motorMessage = new motor_message_t;
+      memset(motorMessage->message.bytes, 0x00, sizeof(motor_message_t));
+      auto broadcast = Broadcast<service_signal_t>::getInstance();
+      com.dir = MESSAGE_DIRECTION::TO_SLAVE;
+      com.type = MESSAGE_TYPE::MODULE_RESTART;
+      com.message = &motorMessage->message;
+      signal.value = com.value;
+      signal.type = SERVICE_SIGNAL_TYPE::PACKET_SEND;
+      broadcast->broadcast(signal);
+      delete motorMessage;
+    });
+
     server.on("^\\/restart$", HTTP_GET, [](AsyncWebServerRequest* request) {
-      request->send(200, "text/html", "restart");
+      request->send(200, "text/html", request->url());
       ESP.restart();
     });
 

@@ -6,9 +6,10 @@ const uint8_t PACKET_SIZE = 6;
 
 #pragma pack(push, 1)
 enum class MESSAGE_TYPE : uint8_t {
-    SET_COLOR = 0x1,
-    RUN_MOTOR = 0x2,
-    GET_SIZE = 0x4
+    MODULE_RESTART,
+    SET_COLOR,
+    RUN_MOTOR,
+    GET_SIZE
 };
 
 enum class MESSAGE_DIRECTION : uint8_t {

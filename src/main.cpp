@@ -58,6 +58,11 @@ void setup() {
         request->send(200, "text/html", LED_SET_HTML);
     });
 
+    server.on("^\\/air$", HTTP_GET, [](AsyncWebServerRequest* request) {
+        request->send(200, "text/html", request->url());
+        motorInterval.removeAir();
+    });
+
     server.on("^\\/led\\/power\\/([a-zA-Z]+)$", HTTP_GET, [](AsyncWebServerRequest* request) {
       const String onOff = request->pathArg(0);
       request->send(200, "text/plain", onOff);

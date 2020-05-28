@@ -6,6 +6,7 @@
 #include "../struct/packet.hpp"
 #include "../struct/service.hpp"
 #include "../utils/broadcast.hpp"
+#include "../config.hpp"
 
 class MotorInterval : public Service {
     private:
@@ -28,6 +29,17 @@ class MotorInterval : public Service {
         bool onOff;
 
         MOTOR_STATUS sendMessage(const MOTOR_STATUS status) const {
+            switch(status){
+                case MOTOR_STATUS::MOTOR_ON : {
+                    digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+                    break;
+                }
+                case MOTOR_STATUS::MOTOR_OFF : {
+                    digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                    break;
+                }
+                default : break;
+            }
             service_signal_t signal;
             communcation_service_signal_t com;
             motor_message_t* motorMessage = new motor_message_t;
@@ -57,6 +69,13 @@ class MotorInterval : public Service {
         lastTime = 0;
         intervalSpan = MOTOR_DEFAULT_SPAN;
         intervalTime = MOTOR_DEFAULT_TIME;
+        pinMode(MOTOR_DEFAULT_PIN, OUTPUT);
+    }
+
+    void removeAir(){
+        digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+        delay(MOTOR_AIR_REMOVE_TIME);
+        digitalWrite(MOTOR_DEFAULT_PIN, LOW);
     }
 
     void execute(){

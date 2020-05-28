@@ -29,6 +29,7 @@ const gpio_num_t OLED_RESET_PIN = GPIO_NUM_19;
 
 const uint16_t MOTOR_DEFAULT_SPAN = 60000u;
 const uint16_t MOTOR_DEFAULT_TIME = 1000u;
+const uint16_t MOTOR_AIR_REMOVE_TIME = 1000u * 10u;
 const uint8_t LED_COUNT = 4;
 const char *const SSID = "THES3";
 const char *const PASSWORD = "1234123412";

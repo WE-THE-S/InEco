@@ -11,10 +11,12 @@ class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver
         void recv(){
             if(this->bottom->available()){
                 auto str = this->bottom->readString();
+                ESP_LOGI(typename(this), "Bottom : %d", this->right->available());
                 ESP_LOGI(typename(this), "Bottom : %s", str.c_str());
             }
             if(this->right->available()){
                 auto str = this->right->readString();
+                ESP_LOGI(typename(this), "Right : %d", this->right->available());
                 ESP_LOGI(typename(this), "Right : %s", str.c_str());
             }
         }

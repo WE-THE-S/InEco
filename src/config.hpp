@@ -1,15 +1,12 @@
 #ifndef __CONFIG_HPP__
 #define __CONFIG_HPP__
 
-#include <SoftwareSerial.h>
 #include <Arduino.h>
 
 const uint32_t FW_VERSION = 0;
 const bool IS_DEV = true;
-const unsigned long SOFTWARE_UART_BAUDRATE = 460800;
-const unsigned long HARDWARE_UART_BAUDRATE = SOFTWARE_UART_BAUDRATE; //테스트용
+const unsigned long HARDWARE_UART_BAUDRATE = 460800ul; //테스트용
 const uint32_t HARDWARE_UART_SERIAL_MODE = SERIAL_8N1;
-const SoftwareSerialConfig SOFTWARE_UART_SERIAL_MODE = SWSERIAL_8N1;
 
 const gpio_num_t BOTTOM_UART_RX = GPIO_NUM_14;
 const gpio_num_t BOTTOM_UART_TX = GPIO_NUM_27;

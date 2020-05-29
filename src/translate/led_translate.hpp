@@ -26,7 +26,7 @@ class LedTranslate : public Translate {
                 case MESSAGE_TYPE::MODULE_RESTART : {
                     send(message);
                     if(message->type == MESSAGE_TYPE::MODULE_RESTART){
-                        delay(1);
+                        delay(10);
                         ESP.restart();
                     }
                     break;

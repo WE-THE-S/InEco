@@ -15,12 +15,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install platformio
-        git clone https://github.com/me-no-dev/ESPAsyncWebServer.git /tmp/ESPAsyncWebServer
-        git clone https://github.com/me-no-dev/AsyncTCP.git /tmp/AsyncTCP
         git clone https://github.com/olikraus/u8g2.git /tmp/u8g2
+        git clone https://github.com/Makuna/NeoPixelBus.git /tmp/NeoPixelBus
 
     - name: Control Board CI
-      run: platformio ci src/main.cpp --lib="." --lib="/tmp/ESPAsyncWebServer" --lib="/tmp/u8g2/*" --lib="/tmp/AsyncTCP" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0"
+      run: platformio ci src/main.cpp --lib="." --lib="/tmp/u8g2/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0"
 
     - name: LED Board CI
-      run: platformio ci src/main.cpp --lib="." --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1"
+      run: platformio ci src/main.cpp --lib="." --lib="/tmp/NeoPixelBus/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1"

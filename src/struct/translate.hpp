@@ -5,7 +5,6 @@
 #include "../utils/broadcast.hpp"
 #include "./packet.hpp"
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 
 class Translate {
 protected:

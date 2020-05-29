@@ -12,6 +12,7 @@ class MessageGpioControlHandler : public MessageBroadcastReceiver{
     public:
         MessageGpioControlHandler(const gpio_num_t _pin) : pin(_pin) {
             pinMode(_pin, OUTPUT);
+            digitalWrite(_pin, LOW);
         }
         
         void onMessage(const device_communication_message_t message){

@@ -19,6 +19,8 @@ class MotorInterval : public Service {
         //마지막으로 켜진 시간
         uint64_t lastTime;
 
+        uint64_t airClearStartTime;
+
         //마지막으로 타이머가 설정한 값
         MOTOR_STATUS lastIntervalStatus;
 
@@ -67,18 +69,25 @@ class MotorInterval : public Service {
         onOff = false;
         lastIntervalStatus = MOTOR_STATUS::MOTOR_OFF;
         lastTime = 0;
+        airClearStartTime = 0;
         intervalSpan = MOTOR_DEFAULT_SPAN;
         intervalTime = MOTOR_DEFAULT_TIME;
         pinMode(MOTOR_DEFAULT_PIN, OUTPUT);
+        digitalWrite(MOTOR_DEFAULT_PIN, LOW);
     }
 
     void removeAir(){
         digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
-        delay(MOTOR_AIR_REMOVE_TIME);
-        digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+        airClearStartTime = millis();
     }
 
     void execute(){
+        if(airClearStartTime != 0){
+            if(airClearStartTime + MOTOR_AIR_REMOVE_TIME < millis()){
+                digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                airClearStartTime = 0;
+            }
+        }
         if(this->intervalEnable){
             const uint64_t now = millis();
             const auto requireOffTime = this->lastTime + this->intervalSpan;

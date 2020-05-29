@@ -33,10 +33,12 @@ class MotorInterval : public Service {
         MOTOR_STATUS sendMessage(const MOTOR_STATUS status) const {
             switch(status){
                 case MOTOR_STATUS::MOTOR_ON : {
+                    digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
                     digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
                     break;
                 }
                 case MOTOR_STATUS::MOTOR_OFF : {
+                    digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
                     digitalWrite(MOTOR_DEFAULT_PIN, LOW);
                     break;
                 }
@@ -73,10 +75,13 @@ class MotorInterval : public Service {
         intervalSpan = MOTOR_DEFAULT_SPAN;
         intervalTime = MOTOR_DEFAULT_TIME;
         pinMode(MOTOR_DEFAULT_PIN, OUTPUT);
+        pinMode(WATER_SOLENOID_VALVE_PIN, OUTPUT);
         digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+        digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
     }
 
     void removeAir(){
+        digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
         digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
         airClearStartTime = millis();
     }
@@ -85,6 +90,7 @@ class MotorInterval : public Service {
         if(airClearStartTime != 0){
             if(airClearStartTime + MOTOR_AIR_REMOVE_TIME < millis()){
                 digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
                 airClearStartTime = 0;
             }
         }

@@ -8,6 +8,7 @@
   #include "./handler/led/led_handler.hpp"
   #include "./handler/led/motor_handler.hpp"
   #include "./translate/led_translate.hpp"
+
   LedHanlder led;
   MotorHanlder motor;
   LedTranslate translate;
@@ -40,8 +41,6 @@ void setup() {
     instance->add(&motor);
     ESP_LOGI(typename(this), "Start");
   #elif CONTROL_BOARD == 1
-    pinMode(SLAVE_ENABLE_PIN, OUTPUT);
-    digitalWrite(SLAVE_ENABLE_PIN, LOW);
     WiFi.mode(WIFI_STA);
     WiFi.begin(SSID, PASSWORD);
     while (WiFi.status() != WL_CONNECTED) {
@@ -130,7 +129,6 @@ void setup() {
     instance->add(&translate);
     instance->add(&motorInterval);
     instance->add(&lcd);
-    digitalWrite(SLAVE_ENABLE_PIN, HIGH);
   #endif
 }
 

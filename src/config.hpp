@@ -14,7 +14,7 @@ const gpio_num_t RIGHT_UART_RX = GPIO_NUM_26;
 const gpio_num_t RIGHT_UART_TX = GPIO_NUM_25;
 
 const gpio_num_t MOTOR_DEFAULT_PIN = GPIO_NUM_32;
-const gpio_num_t SLAVE_ENABLE_PIN = GPIO_NUM_33;
+const gpio_num_t WATER_SOLENOID_VALVE_PIN = GPIO_NUM_33;
 const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_34;
 const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_13;
 const gpio_num_t LED_CONTROL_DEFAULT_PIN = ALARM_LED_DEFAULT_PIN;

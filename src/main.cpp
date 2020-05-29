@@ -12,14 +12,14 @@
   MotorHanlder motor;
   LedTranslate translate;
 #elif CONTROL_BOARD == 1
-  #include "./service/alarm.hpp"
-  #include "./service/water_level.hpp"
-  #include "./service/motor_interval.hpp"
-  #include "./service/lcd.hpp"
   #include <WiFi.h>
   #include <WiFiClient.h>
   #include <WebServer.h>
   #include <ESPmDNS.h>
+  #include "./service/alarm.hpp"
+  #include "./service/water_level.hpp"
+  #include "./service/motor_interval.hpp"
+  #include "./service/lcd.hpp"
   #include "./translate/control_translate.hpp"
 
   WebServer server(80);
@@ -105,7 +105,7 @@ void setup() {
       server.send(200, "text/html", String(message.onOff));
     });
 
-    server.on("^/motor/set/enable/{}/time/{}/span/{}", HTTP_GET, []() {
+    server.on("/motor/set/enable/{}/time/{}/span/{}", HTTP_GET, []() {
       const String enable = server.pathArg(0);
       const String time = server.pathArg(1);
       const String span = server.pathArg(2);

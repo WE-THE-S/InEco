@@ -21,5 +21,5 @@ jobs:
     - name: Control Board CI
       run: platformio ci src/main.cpp --lib="." --lib="/tmp/u8g2/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0"
 
-    - name: LED Board CI
-      run: platformio ci src/main.cpp --lib="." --lib="/tmp/NeoPixelBus/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1"
+#    - name: LED Board CI
+#      run: platformio ci src/main.cpp --lib="." --lib="/tmp/NeoPixelBus/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1"

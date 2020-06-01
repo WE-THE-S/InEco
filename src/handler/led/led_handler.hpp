@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <queue>
+#include <Wire.h>
 #include <cstdint>
 #include "../../config.hpp"
 #include "../../struct/packet.hpp"

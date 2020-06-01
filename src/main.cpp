@@ -23,7 +23,7 @@
   #include "./service/lcd.hpp"
   #include "./translate/control_translate.hpp"
 
-  WebServer server(80);
+  WebServer server(HTTP_SERVER_PORT);
   ControlTranslate translate;
   Alarm ledAlarm;
   LCD lcd;

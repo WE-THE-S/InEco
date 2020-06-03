@@ -17,9 +17,10 @@ jobs:
         pip install platformio
         git clone https://github.com/olikraus/u8g2.git /tmp/u8g2
         git clone https://github.com/Makuna/NeoPixelBus.git /tmp/NeoPixelBus
+        git clone https://github.com/bblanchon/ArduinoJson.git /tmp/ArduinoJson
 
     - name: Control Board CI
-      run: platformio ci src/main.cpp --lib="." --lib="/tmp/u8g2/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0"
+      run: platformio ci src/main.cpp --lib="." --lib="/tmp/u8g2/*" --lib="/tmp/ArduinoJson/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0"
 
 #    - name: LED Board CI
 #      run: platformio ci src/main.cpp --lib="." --lib="/tmp/NeoPixelBus/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1"

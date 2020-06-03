@@ -13,6 +13,7 @@
   MotorHanlder motor;
   LedTranslate translate;
 #elif CONTROL_BOARD == 1
+  #include <ArduinoJson.h>
   #include <WiFi.h>
   #include <WiFiClient.h>
   #include <WebServer.h>

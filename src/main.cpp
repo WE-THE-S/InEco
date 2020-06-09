@@ -18,6 +18,7 @@
   #include <WiFiClient.h>
   #include <WebServer.h>
   #include <ESPmDNS.h>
+  #include <WebSocketsClient.h>
   #include "./service/alarm.hpp"
   #include "./service/water_level.hpp"
   #include "./service/motor_interval.hpp"
@@ -47,25 +48,20 @@ void setup() {
     while (WiFi.status() != WL_CONNECTED) {
       delay(100);
     }
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-
+    ESP_LOGI(typename(this), "IP Address : %s ", WiFi.localIP().toString().c_str());
+    ESP_LOGI(typename(this), "Mac Address : %s", WiFi.macAddress().c_str());
+    
     MDNS.begin("ineco");
 
     server.onNotFound(notFound);
 
-    server.on("/led", HTTP_GET, []() {
-        server.send(200, "text/html", LED_SET_HTML);
+    server.on("/mac", HTTP_GET, []() {
+        server.send(200, "text/html", WiFi.macAddress());
     });
 
     server.on("/air", HTTP_GET, []() {
         server.send(200, "text/html", server.uri());
         motorInterval.removeAir();
-    });
-
-    server.on("/led/power/{}", HTTP_GET, []() {
-      const String onOff = server.pathArg(0);
-      server.send(200, "text/plain", onOff);
     });
 
     server.on("/init", HTTP_GET, []() {

@@ -33,6 +33,8 @@ const uint16_t HTTP_SERVER_PORT = 80;
 const char *const SSID = "THES3";
 const char *const PASSWORD = "1234123412";
 const unsigned int WATER_LOW_THRESHOLD = 400u;
+const char *const WEBSOCKET_SERVER_HOST = "the-s.kr";
+const uint16_t WEBSOCKET_SERVER_PORT = 8081u;
 
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \

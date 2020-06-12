@@ -76,8 +76,8 @@ void setup() {
       signal.value = com.value;
       signal.type = SERVICE_SIGNAL_TYPE::PACKET_SEND;
       broadcast->broadcast(signal);
-      server.send(200, "text/html", server.uri());
       delete motorMessage;
+      server.send(200, "text/html", server.uri());
     });
 
     server.on("/restart", HTTP_GET, []() {

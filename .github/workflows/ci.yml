@@ -18,10 +18,10 @@ jobs:
         git clone https://github.com/olikraus/u8g2.git /tmp/u8g2
         git clone https://github.com/Makuna/NeoPixelBus.git /tmp/NeoPixelBus
         git clone https://github.com/bblanchon/ArduinoJson.git /tmp/ArduinoJson
-        git clone https://github.com/gilmaimon/ArduinoWebsockets.git /tmp/ArduinoWebsockets
+        git clone https://github.com/gilmaimon/ArduinoWebsockets.git /tmp/ws
 
     - name: Control Board CI
-      run: platformio ci src/main.cpp --lib="." --lib="/tmp/ArduinoWebsockets/*" --lib="/tmp/u8g2/*" --lib="/tmp/ArduinoJson/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=1 -DLED_BOARD=0"
+      run: platformio run -e controlBoard
 
-#    - name: LED Board CI
-#      run: platformio ci src/main.cpp --lib="." --lib="/tmp/NeoPixelBus/*" --board=esp32dev --project-option="build_flags= -DCORE_DEBUG_LEVEL=0 -DCONTROL_BOARD=0 -DLED_BOARD=1"
+    - name: LED Board CI
+      run: platformio run -e ledBoard

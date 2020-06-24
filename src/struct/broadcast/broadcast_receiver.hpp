@@ -5,7 +5,7 @@
 #include "../helper.hpp"
 
 template <typename T>
-class BroadcastReceiver : protected Helper  {
+class BroadcastReceiver  {
     public:
     virtual void onMessage(const T message);
 };

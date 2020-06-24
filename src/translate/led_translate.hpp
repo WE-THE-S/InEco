@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "../struct/packet.hpp"
 #include "../struct/translate.hpp"
-
+#include "../struct/helper.hpp"
 class LedTranslate : public Translate {
     protected:
     void broadcast(const device_communication_message_t message){
@@ -20,7 +20,8 @@ class LedTranslate : public Translate {
             auto message = new device_communication_message_t;
             this->master->readBytes(message->bytes, sizeof(device_communication_message_t)); 
             this->broadcast(*message);
-            ESP_LOGI(typename(this), "Packet : %s", bytesToHex(message->bytes, sizeof(device_communication_message_t)).c_str());
+            Helper helper;
+            ESP_LOGI(typename(this), "Packet : %s", helper.bytesToHex(message->bytes, sizeof(device_communication_message_t)).c_str());
             switch(message->type){
                 case MESSAGE_TYPE::RUN_MOTOR : 
                 case MESSAGE_TYPE::MODULE_RESTART : {

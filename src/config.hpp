@@ -87,23 +87,5 @@ const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
   });\
 </script>";
 
-const ROMFN_ATTR char *const LED_SET_HTML = "\
-<!DOCTYPE html>\
-<h1>LED ON/OFF</h1>\
-<input type='button' id='on' value='on' />\
-<input type='button' id='off' value='off' />\
-<script type='text/javascript'>\
-	function request(url){\
-		const xhttp = new XMLHttpRequest();\
-    	xhttp.open('GET', url, true);\
-		xhttp.send();\
-    }\
-  on.addEventListener('click', function(){\
-	request('led/power/on');\
-  });\
-  off.addEventListener('click', function(){\
-	request('led/power/off');\
-  });\
-</script>";
 
 #endif

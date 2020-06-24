@@ -9,7 +9,7 @@
 #include <Wire.h>
 #include <cstdint>
 #include <queue>
-
+#include "../../struct/helper.hpp"
 using namespace std;
 
 class LedHanlder : public MessageGpioControlHandler {
@@ -24,21 +24,20 @@ public:
 	}
 
 	void onMessage(const device_communication_message_t message) {
-		ESP_LOGI(typename(this), "Packet : %s", bytesToHex(const_cast<uint8_t *>(message.bytes),
+        Helper helper;
+		ESP_LOGI(typename(this), "Packet : %s", helper.bytesToHex(const_cast<uint8_t *>(message.bytes),
                          sizeof(device_communication_message_t)).c_str());
 		if (strip == nullptr) {
 			strip = new NeoPixelBus<NeoGrbFeature, NeoEsp32I2s1800KbpsMethod>(LED_COUNT, this->pin);
 			strip->Begin();
-			RgbColor color(0xff, 0xff, 0xff);
-			strip->ClearTo(color, 0, LED_COUNT);
-			strip->Show();
 		}
 		if (message.type == MESSAGE_TYPE::SET_COLOR) {
 			led_message_t led;
 			led.message = message.message;
 			if (0 == led.col && 0 == led.row) {
 				RgbColor color(led.color.r, led.color.g, led.color.b);
-				strip->ClearTo(color, 0, LED_COUNT);
+				strip->ClearTo(color);
+            
 				strip->Show();
 			}
 		}

@@ -5,6 +5,7 @@
 #include "../struct/packet.hpp"
 #include "../struct/translate.hpp"
 #include "../struct/broadcast/service_signal_receiver.hpp"
+#include "../struct/helper.hpp"
 
 class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver {
     public:
@@ -34,7 +35,8 @@ class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver
                 packet.message = *signal.message;
                 packet.type = signal.type;
                 packet.dir = signal.dir;
-                ESP_LOGI(typename(this), "Hex : %s", bytesToHex(packet.bytes, sizeof(device_communication_message_t)).c_str());
+                Helper helper;
+                ESP_LOGI(typename(this), "Hex : %s", helper.bytesToHex(packet.bytes, sizeof(device_communication_message_t)).c_str());
                 send(packet);
             }
         }

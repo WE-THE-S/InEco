@@ -5,9 +5,10 @@
 #include <string>
 
 class Helper {
-    protected:
+    private:
     char const hex[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+    public:
     std::string bytesToHex(uint8_t *bytes, size_t size) const {
         std::string str;
         for (size_t i = 0; i < size; ++i) {

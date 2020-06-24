@@ -65,10 +65,6 @@ void setup() {
 		const uint8_t x = static_cast<uint8_t>(atoi(xStr.c_str()));
 		const uint32_t color = static_cast<uint32_t>(atoll(colorStr.c_str()));
 
-		StaticJsonDocument<128> json;
-		json["x"] = x;
-		json["y"] = y;
-		json["color"] = color;
 
 		service_signal_t signal;
 		communcation_service_signal_t com;
@@ -94,14 +90,23 @@ void setup() {
 
 		broadcast->broadcast(signal);
 
+		DynamicJsonDocument json(256);
+		json["x"] = x;
+		json["y"] = y;
+    json["color"]["r"] = ledMessage->color.r;
+    json["color"]["g"] = ledMessage->color.g;
+    json["color"]["b"] = ledMessage->color.b;
+    json["color"]["bright"] = ledMessage->color.bright;
+
 		delete ledMessage;
 
 		size_t len = measureJson(json);
 		char *buffer = new char[len + 32];
 		serializeJson(json, buffer, len + 1);
-		delete[] buffer;
-		json.clear();
 		server.send(200, "text/html", buffer);
+		json.clear();
+    json.shrinkToFit();
+		delete[] buffer;
 	});
 
 	server.on("/mac", HTTP_GET, []() {

@@ -6,7 +6,7 @@
 #include "./packet.hpp"
 #include <Arduino.h>
 #include "./helper.hpp"
-class Translate : protected Helper {
+class Translate {
 protected:
 	HardwareSerial *master;
 	HardwareSerial *right;

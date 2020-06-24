@@ -37,7 +37,6 @@ public:
 			if (0 == led.col && 0 == led.row) {
 				RgbColor color(led.color.r, led.color.g, led.color.b);
 				strip->ClearTo(color);
-            
 				strip->Show();
 			}
 		}

@@ -37,9 +37,24 @@ class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver
                 packet.dir = signal.dir;
                 Helper helper;
                 ESP_LOGI(typename(this), "Hex : %s", helper.bytesToHex(packet.bytes, sizeof(device_communication_message_t)).c_str());
-                send(packet);
+                if(signal.type == MESSAGE_TYPE::SET_COLOR){
+                    led_message_t led;
+                    led.message = *signal.message;
+                    if(led.row > 1){
+                        bottomSend(packet);
+                    }else{
+                        rightSend(packet);                        
+                    }
+                }else{
+                    send(packet);
+                }
             }
         }
+        /*
+            col_ _
+            |
+        row |
+        */
 };
 
 #endif

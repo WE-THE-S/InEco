@@ -97,7 +97,6 @@ void setup() {
     json["color"]["g"] = ledMessage->color.g;
     json["color"]["b"] = ledMessage->color.b;
     json["color"]["bright"] = ledMessage->color.bright;
-
 		delete ledMessage;
 
 		size_t len = measureJson(json);
@@ -106,6 +105,7 @@ void setup() {
 		server.send(200, "text/html", buffer);
 		json.clear();
     json.shrinkToFit();
+    json.garbageCollect();
 		delete[] buffer;
 	});
 

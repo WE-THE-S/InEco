@@ -40,7 +40,10 @@ class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver
                 if(signal.type == MESSAGE_TYPE::SET_COLOR){
                     led_message_t led;
                     led.message = *signal.message;
+                    ESP_LOGI(typename(this), "row : %u", led.row);
                     if(led.row > 1){
+                        led.row -= 2;
+                        packet.message = led.message;
                         bottomSend(packet);
                     }else{
                         rightSend(packet);                        

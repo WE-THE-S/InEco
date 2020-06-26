@@ -65,7 +65,6 @@ void setup() {
 		const uint8_t x = static_cast<uint8_t>(atoi(xStr.c_str()));
 		const uint32_t color = static_cast<uint32_t>(atoll(colorStr.c_str()));
 
-
 		service_signal_t signal;
 		communcation_service_signal_t com;
 		led_message_t *ledMessage = new led_message_t;
@@ -93,10 +92,10 @@ void setup() {
 		DynamicJsonDocument json(256);
 		json["x"] = x;
 		json["y"] = y;
-    json["color"]["r"] = ledMessage->color.r;
-    json["color"]["g"] = ledMessage->color.g;
-    json["color"]["b"] = ledMessage->color.b;
-    json["color"]["bright"] = ledMessage->color.bright;
+		json["color"]["r"] = ledMessage->color.r;
+		json["color"]["g"] = ledMessage->color.g;
+		json["color"]["b"] = ledMessage->color.b;
+		json["color"]["bright"] = ledMessage->color.bright;
 		delete ledMessage;
 
 		size_t len = measureJson(json);
@@ -104,8 +103,8 @@ void setup() {
 		serializeJson(json, buffer, len + 1);
 		server.send(200, "text/html", buffer);
 		json.clear();
-    json.shrinkToFit();
-    json.garbageCollect();
+		json.shrinkToFit();
+		json.garbageCollect();
 		delete[] buffer;
 	});
 

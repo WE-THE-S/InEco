@@ -17,7 +17,13 @@ protected:
     }
 
     inline void rightSend(device_communication_message_t packet){
+		#if CONTROL_BOARD == 1
+			for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
+		#endif
         this->right->write(packet.bytes, sizeof(device_communication_message_t));
+		#if CONTROL_BOARD == 1	
+			}
+		#endif
     }
 
     inline void bottomSend(device_communication_message_t* packet){
@@ -25,7 +31,13 @@ protected:
     }
 
     inline void bottomSend(device_communication_message_t packet){
+		#if CONTROL_BOARD == 1
+			for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
+		#endif
         this->bottom->write(packet.bytes, sizeof(device_communication_message_t));
+		#if CONTROL_BOARD == 1	
+			}
+		#endif
     }
     
     inline void send(device_communication_message_t* packet){

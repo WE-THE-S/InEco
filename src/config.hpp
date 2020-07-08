@@ -4,9 +4,9 @@
 #include <Arduino.h>
 
 const uint32_t FW_VERSION = 0;
-const bool IS_DEV = true;
 const unsigned long HARDWARE_UART_BAUDRATE = 460800ul; //테스트용
 const uint32_t HARDWARE_UART_SERIAL_MODE = SERIAL_8N1;
+const size_t PACKET_RETRY_COUNT = 5;
 
 const gpio_num_t BOTTOM_UART_RX = GPIO_NUM_14;
 const gpio_num_t BOTTOM_UART_TX = GPIO_NUM_27;

@@ -18,6 +18,7 @@ LedTranslate translate;
 #include "./service/motor_interval.hpp"
 #include "./service/water_level.hpp"
 #include "./translate/control_translate.hpp"
+#include <FirebaseESP32.h>
 #include <ArduinoJson.h>
 #include <ESPmDNS.h>
 #include <WebServer.h>

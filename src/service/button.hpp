@@ -1,5 +1,5 @@
-#ifndef __WATER_LEVEL_HPP__
-#define __WATER_LEVEL_HPP__
+#ifndef __BUTTON_HPP__
+#define __BUTTON_HPP__
 
 #include <Arduino.h>
 #include <soc/rtc_cntl_reg.h>
@@ -14,7 +14,6 @@ using namespace std;
 //초 단위임
 const uint32_t intervalTimeSet[] = {600, 1800, 7200, 21600, 43200};
 
-
 class Button : public Service {
     protected:
         uint8_t intervalTimePos;
@@ -28,8 +27,10 @@ class Button : public Service {
             Broadcast<service_signal_t>::getInstance()->broadcast(signal);
         }
     public:
-    Button(gpio_num_t _run_pin, gpio_num_t _inter_pin) : 
-        interval(make_pair(_inter_pin, 0)), runTime(make_pair(_run_pin, 0)), intervalTimePos(0u) {
+    Button(gpio_num_t _run_pin, gpio_num_t _inter_pin) {
+        runTime = make_pair(_run_pin, 0);
+        intervalTimePos = 0u;
+        interval = make_pair(_inter_pin, 0); 
         this->message = new motor_interval_service_signal_t;
         this->message->intervalEnable = true;
         this->message->isIntervalSet = true;

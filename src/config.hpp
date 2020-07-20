@@ -21,7 +21,6 @@ const gpio_num_t LED_CONTROL_DEFAULT_PIN = ALARM_LED_DEFAULT_PIN;
 const gpio_num_t INTERVAL_BUTTON_DEFAULT_PIN = GPIO_NUM_12;
 const gpio_num_t RUNTIME_BUTTON_DEFAULT_PIN = GPIO_NUM_14;
 
-
 const gpio_num_t OLED_CLK_PIN = GPIO_NUM_18;
 const gpio_num_t OLED_CS_PIN = GPIO_NUM_12;
 const gpio_num_t OLED_DC_PIN = GPIO_NUM_17;

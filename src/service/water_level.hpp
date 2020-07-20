@@ -23,10 +23,6 @@ private:
 	unsigned char high_data[12] = {
 		0,
 	};
-    const uint8_t ATTINY1_HIGH_ADDR_SIZE = 12;
-    const uint8_t ATTINY2_LOW_ADDR_SIZE = 8;
-    const int WATER_SENSOR_VALUE_MIN = 250;
-    const int WATER_SENSOR_VALUE_MAX = 255;
 
 	bool lastStatus;
 	gpio_num_t pin;
@@ -64,6 +60,7 @@ private:
 
 public:
 	WaterLevel(gpio_num_t _pin) : pin(_pin) {
+        Wire.begin();
 	}
 
 	WaterLevel() : WaterLevel(WATER_LEVEL_SENSOR_DEFAULT_PIN) {

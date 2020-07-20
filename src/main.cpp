@@ -8,11 +8,11 @@
 #include "./handler/led/led_handler.hpp"
 #include "./handler/led/motor_handler.hpp"
 #include "./translate/led_translate.hpp"
-
 LedHanlder led;
 MotorHanlder motor;
 LedTranslate translate;
 #elif CONTROL_BOARD == 1
+#include "./service/button.hpp"
 #include "./service/alarm.hpp"
 #include "./service/lcd.hpp"
 #include "./service/motor_interval.hpp"
@@ -27,6 +27,7 @@ LedTranslate translate;
 #include <WiFiClient.h>
 
 WebServer server(HTTP_SERVER_PORT);
+Button button;
 ControlTranslate translate;
 Alarm ledAlarm;
 LCD lcd;
@@ -133,7 +134,7 @@ void setup() {
 		delete motorMessage;
 		server.send(200, "text/html", server.uri());
 	});
-
+	
 	server.on("/restart", HTTP_GET, []() {
 		server.send(200, "text/html", server.uri());
 		ESP.restart();
@@ -180,6 +181,7 @@ void setup() {
 	instance->add(&translate);
 	instance->add(&motorInterval);
 	instance->add(&lcd);
+	instance->add(&button);
 #endif
 }
 
@@ -188,6 +190,7 @@ void loop() {
 #if CONTROL_BOARD == 1
 	server.handleClient();
 	waterLevel.execute();
+	button.execute();
 	motorInterval.execute();
 #endif
 }

@@ -86,11 +86,11 @@ typedef union _water_level_service_signal_t {
 typedef union _motor_interval_service_signal_t {
     uint64_t value;
     struct{
-        bool isIntervalSet;
-        uint16_t intervalTime;
+        uint32_t intervalTime;
         uint16_t intervalSpan;
-        bool intervalEnable;
-        bool onOff;
+        uint8_t isIntervalSet : 1;
+        uint8_t intervalEnable : 1;
+        uint8_t onOff : 1;
     };
 } motor_interval_service_signal_t;
 

@@ -23,7 +23,9 @@ class Alarm : public Service {
     void onMessage(const service_signal_t message){
         if(message.type == SERVICE_SIGNAL_TYPE::ALARM){
             ESP_LOGI(typename(this), "alarm status change : %d", message.value);
-            if(message.value){
+            water_level_service_signal_t signal;
+            signal.value = message.value;
+            if(signal.onOff){
                 digitalWrite(pin, HIGH);
             }else{
                 digitalWrite(pin, LOW);

@@ -11,7 +11,9 @@
 LedHanlder led;
 MotorHanlder motor;
 LedTranslate translate;
+
 #elif CONTROL_BOARD == 1
+
 #include "./service/button.hpp"
 #include "./service/alarm.hpp"
 #include "./service/lcd.hpp"
@@ -24,6 +26,7 @@ LedTranslate translate;
 #include <WebServer.h>
 #include <WebSocketsClient.h>
 #include <WiFi.h>
+#include <WiFiType.h>
 #include <WiFiClient.h>
 
 WebServer server(HTTP_SERVER_PORT);
@@ -188,9 +191,9 @@ void setup() {
 void loop() {
 	translate.recv();
 #if CONTROL_BOARD == 1
-	server.handleClient();
 	waterLevel.execute();
-	button.execute();
 	motorInterval.execute();
+	button.execute();
+	server.handleClient();
 #endif
 }

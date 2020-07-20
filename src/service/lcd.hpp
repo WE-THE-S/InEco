@@ -15,7 +15,7 @@ U8G2_SSD1327_WS_128X128_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/OLED_CS_PIN, /* dc=*/O
 class LCD : public Service {
 private:
 	//기간
-	uint16_t intervalTime;
+	uint32_t intervalTime;
 
 	//켜지는 시간
 	uint16_t intervalSpan;
@@ -102,10 +102,9 @@ public:
             case SERVICE_SIGNAL_TYPE::ALARM: {
                 water_level_service_signal_t signal;
                 signal.value = message.value;
-                if (signal.onOff) {
-                    this->ledOn = true;
-                } else {
-                    this->ledOn = false;
+                if(this->ledOn != signal.onOff){
+                    ESP_LOGI(typename(this), "Time %u", signal.onOff);
+                    this->ledOn = signal.onOff;
                 }
                 this->waterLevel = signal.level;
                 break;

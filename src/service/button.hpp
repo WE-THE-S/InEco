@@ -21,6 +21,8 @@ class Button : public Service {
         pair<gpio_num_t, int> runTime;
         motor_interval_service_signal_t* message;
         void send(const motor_interval_service_signal_t* message){
+			ESP_LOGI(typename(this), "interval time %u", message->intervalTime);
+            ESP_LOGI(typename(this), "interval span %u", message->intervalSpan);
             service_signal_t signal;
             signal.type = SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET;
             signal.value = message->value;
@@ -34,8 +36,8 @@ class Button : public Service {
         this->message = new motor_interval_service_signal_t;
         this->message->intervalEnable = true;
         this->message->isIntervalSet = true;
-        this->message->intervalSpan = intervalTimeSet[0] * S_TO_MS_FACTOR;
-        this->message->intervalTime = 1 * S_TO_MS_FACTOR;
+        this->message->intervalSpan = S_TO_MS_FACTOR;
+        this->message->intervalTime = intervalTimeSet[intervalTimePos] * S_TO_MS_FACTOR;
         pinMode(_run_pin, INPUT_PULLUP);
         pinMode(_inter_pin, INPUT_PULLUP);
     }
@@ -52,24 +54,31 @@ class Button : public Service {
         bool changed = false;
         auto intervalStatus = digitalRead(interval.first);
         auto runStatus = digitalRead(runTime.first);
-
         if(intervalStatus != interval.second){
-            changed = true;
-            auto nextTime = intervalTimeSet[(intervalTimePos + 1) % MAX_MOTOR_INTERVAL] * S_TO_MS_FACTOR;
-            this->message->intervalTime = nextTime;
+            if(!intervalStatus){
+                ESP_LOGI(typename(this), "Interval Status : %d", intervalStatus);
+                changed = true;
+                intervalTimePos = (intervalTimePos + 1) % MAX_MOTOR_INTERVAL;
+                auto nextTime = intervalTimeSet[intervalTimePos] * S_TO_MS_FACTOR;
+                this->message->intervalTime = nextTime;
+            }
         }
         
         if(runStatus != runTime.second){
-            changed = true;
-            auto nextTime = (this->message->intervalSpan / S_TO_MS_FACTOR);
-            nextTime = ((nextTime + 1) % MAX_MOTOR_SPAN) + 1;
-            this->message->intervalSpan = (nextTime * S_TO_MS_FACTOR);
+            if(!runStatus){
+                ESP_LOGI(typename(this), "Run Status : %d", runStatus);
+                changed = true;
+                auto nextTime = (this->message->intervalSpan / S_TO_MS_FACTOR);
+                nextTime = (nextTime % MAX_MOTOR_SPAN) + 1;
+                this->message->intervalSpan = (nextTime * S_TO_MS_FACTOR);
+            }
         }
-
+    
         interval.second = intervalStatus;
         runTime.second = runStatus;
         if(changed){
             this->send(message);
+            delay(100);
         }
     }
 

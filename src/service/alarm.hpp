@@ -10,9 +10,11 @@
 class Alarm : public Service {
     private:
         gpio_num_t pin;
+        bool last;
     public:
     Alarm(gpio_num_t _pin) : pin(_pin) {
         pinMode(pin, OUTPUT);
+        last = false;
     }
     Alarm() : Alarm(ALARM_LED_DEFAULT_PIN){}
 
@@ -22,13 +24,16 @@ class Alarm : public Service {
 
     void onMessage(const service_signal_t message){
         if(message.type == SERVICE_SIGNAL_TYPE::ALARM){
-            ESP_LOGI(typename(this), "alarm status change : %d", message.value);
             water_level_service_signal_t signal;
             signal.value = message.value;
-            if(signal.onOff){
-                digitalWrite(pin, HIGH);
-            }else{
-                digitalWrite(pin, LOW);
+            if(signal.onOff != last){
+                ESP_LOGI(typename(this), "alarm status change : %d", message.value);
+                if(signal.onOff){
+                    digitalWrite(pin, HIGH);
+                }else{
+                    digitalWrite(pin, LOW);
+                }
+                last = signal.onOff;
             }
         }
     }

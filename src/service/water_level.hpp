@@ -24,13 +24,14 @@ private:
 		0,
 	};
 
-	bool lastStatus;
+	water_level_service_signal_t last;
 	gpio_num_t pin;
-	inline void sendAlarm(const uint64_t value) {
-		lastStatus = (value != 0);
+	inline void sendAlarm(const water_level_service_signal_t value) {
 		service_signal_t signal;
 		signal.type = SERVICE_SIGNAL_TYPE::ALARM;
-		signal.value = value;
+		signal.value = value.value;
+        ESP_LOGI(typename(this), "level %u", value.level);
+        ESP_LOGI(typename(this), "alarm turn %s", value.onOff ? "On" : "Off");
 		Broadcast<service_signal_t>::getInstance()->broadcast(signal);
 	}
 
@@ -102,13 +103,14 @@ public:
         water_level_service_signal_t signal;
 		signal.level = static_cast<uint8_t>(trig_section * 5);
 		if (signal.level <= WATER_LOW_THRESHOLD) {
-			ESP_LOGI(typename(this), "raw : turn on");
             signal.onOff = 1u;
 		} else {
-			ESP_LOGI(typename(this), "raw : turn off");
 			signal.onOff = 0u;
 		}
-        sendAlarm(signal.value);
+        if(memcmp(&signal, &last, sizeof(water_level_service_signal_t)) != 0){
+            sendAlarm(signal);
+        }
+        last = signal;
 	}
 
 	void onMessage(const service_signal_t message) {

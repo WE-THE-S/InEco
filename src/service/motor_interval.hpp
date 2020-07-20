@@ -11,7 +11,7 @@
 class MotorInterval : public Service {
     private:
         //기간
-        uint16_t intervalTime;
+        uint32_t intervalTime;
 
         //켜지는 시간
         uint16_t intervalSpan;

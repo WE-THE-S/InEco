@@ -23,6 +23,9 @@ private:
 	//반복 실행 설정
 	bool intervalEnable;
 
+    //물 레벨
+    uint8_t waterLevel;
+
 	//onOff
 	bool onOff;
 
@@ -56,7 +59,7 @@ private:
         u8g2.drawStr(0, 52, buffer);
         this->messageBuilder("Time", this->intervalTime, "ms");
         u8g2.drawStr(0, 67, buffer);
-        this->messageBuilder("Status", this->onOff ? "ON" : "OFF");
+        this->messageBuilder("level", this->waterLevel, "%");
         u8g2.drawStr(0, 82, buffer);
         this->messageBuilder("Status", this->ledOn ? "ON" : "OFF");
         u8g2.drawStr(0, 120, buffer);
@@ -70,6 +73,7 @@ public:
         ledOn = false;
         intervalSpan = MOTOR_DEFAULT_SPAN;
         intervalTime = MOTOR_DEFAULT_TIME;
+        waterLevel = 0u;
     }
     void execute(){
         u8g2.begin();
@@ -96,11 +100,14 @@ public:
                 break;
             }
             case SERVICE_SIGNAL_TYPE::ALARM: {
-                if (message.value) {
+                water_level_service_signal_t signal;
+                signal.value = message.value;
+                if (signal.onOff) {
                     this->ledOn = true;
                 } else {
                     this->ledOn = false;
                 }
+                this->waterLevel = signal.level;
                 break;
             }
             default: {

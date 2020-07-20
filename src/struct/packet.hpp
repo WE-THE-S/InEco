@@ -75,6 +75,14 @@ typedef struct _service_signal_t {
     };
 } service_signal_t;
 
+typedef union _water_level_service_signal_t {
+    uint64_t value;
+    struct{
+        uint8_t level;
+        bool onOff;
+    };
+} water_level_service_signal_t;
+
 typedef union _motor_interval_service_signal_t {
     uint64_t value;
     struct{

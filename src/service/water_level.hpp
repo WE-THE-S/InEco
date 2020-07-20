@@ -101,14 +101,16 @@ public:
 			trig_section++;
 			touch_val >>= 1;
 		}
-		auto level = trig_section * 5;
-		if (level <= WATER_LOW_THRESHOLD) {
+        water_level_service_signal_t signal;
+		signal.level = static_cast<uint8_t>(trig_section * 5);
+		if (signal.level <= WATER_LOW_THRESHOLD) {
 			ESP_LOGI(typename(this), "raw : turn on");
-			sendAlarm(1ull);
+            signal.onOff = 1u;
 		} else {
 			ESP_LOGI(typename(this), "raw : turn off");
-			sendAlarm(0ull);
+			signal.onOff = 0u;
 		}
+        sendAlarm(signal.value);
 	}
 
 	void onMessage(const service_signal_t message) {

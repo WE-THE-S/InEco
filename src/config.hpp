@@ -36,6 +36,10 @@ const uint16_t MOTOR_DEFAULT_TIME = 1000u;
 const uint16_t MOTOR_AIR_REMOVE_TIME = 1000u * 10u;
 const uint8_t LED_COUNT = 4;
 const uint16_t HTTP_SERVER_PORT = 80;
+const uint8_t ATTINY1_HIGH_ADDR_SIZE = 12;
+const uint8_t ATTINY2_LOW_ADDR_SIZE = 8;
+const int WATER_SENSOR_VALUE_MIN = 250;
+const int WATER_SENSOR_VALUE_MAX = 255;
 
 const char *const SSID = "THES3";
 const char *const PASSWORD = "1234123412";

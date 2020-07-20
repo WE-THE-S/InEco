@@ -23,9 +23,10 @@ private:
 	unsigned char high_data[12] = {
 		0,
 	};
-
-    const int sensorvalue_min = 250;
-    const int sensorvalue_max = 255;
+    const uint8_t ATTINY1_HIGH_ADDR_SIZE = 12;
+    const uint8_t ATTINY2_LOW_ADDR_SIZE = 8;
+    const int WATER_SENSOR_VALUE_MIN = 250;
+    const int WATER_SENSOR_VALUE_MAX = 255;
 
 	bool lastStatus;
 	gpio_num_t pin;
@@ -38,8 +39,8 @@ private:
 	}
 
 	void getHigh12SectionValue(void) {
-		memset(high_data, 0, sizeof(high_data));
-		Wire.requestFrom(ATTINY1_HIGH_ADDR, 12);
+		memset(high_data, 0, ATTINY1_HIGH_ADDR_SIZE);
+		Wire.requestFrom(ATTINY1_HIGH_ADDR, ATTINY1_HIGH_ADDR_SIZE);
 		while (12 != Wire.available())
 			;
 
@@ -50,8 +51,8 @@ private:
 	}
 
 	void getLow8SectionValue(void) {
-		memset(low_data, 0, sizeof(low_data));
-		Wire.requestFrom(ATTINY2_LOW_ADDR, 8);
+		memset(low_data, 0, ATTINY2_LOW_ADDR_SIZE);
+		Wire.requestFrom(ATTINY2_LOW_ADDR, ATTINY2_LOW_ADDR_SIZE);
 		while (8 != Wire.available())
 			;
 
@@ -77,12 +78,12 @@ public:
 		this->getHigh12SectionValue();
 
 		for (int i = 0; i < 8; i++) {
-			if (low_data[i] >= sensorvalue_min && low_data[i] <= sensorvalue_max) {
+			if (low_data[i] >= WATER_SENSOR_VALUE_MIN && low_data[i] <= WATER_SENSOR_VALUE_MAX) {
 				low_count++;
 			}
 		}
 		for (int i = 0; i < 12; i++) {
-			if (high_data[i] >= sensorvalue_min && high_data[i] <= sensorvalue_max) {
+			if (high_data[i] >= WATER_SENSOR_VALUE_MIN && high_data[i] <= WATER_SENSOR_VALUE_MAX) {
 				high_count++;
 			}
 		}

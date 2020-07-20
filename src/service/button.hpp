@@ -29,7 +29,7 @@ class Button : public Service {
             Broadcast<service_signal_t>::getInstance()->broadcast(signal);
         }
     public:
-    Button(gpio_num_t _run_pin, gpio_num_t _inter_pin) {
+    Button(const gpio_num_t _run_pin, const gpio_num_t _inter_pin) {
         runTime = make_pair(_run_pin, 0);
         intervalTimePos = 0u;
         interval = make_pair(_inter_pin, 0); 
@@ -38,10 +38,8 @@ class Button : public Service {
         this->message->isIntervalSet = true;
         this->message->intervalSpan = S_TO_MS_FACTOR;
         this->message->intervalTime = intervalTimeSet[intervalTimePos] * S_TO_MS_FACTOR;
-        pinMode(_run_pin, INPUT_PULLUP);
-        pinMode(_inter_pin, INPUT_PULLUP);
     }
-    
+
     Button() : Button(RUNTIME_BUTTON_DEFAULT_PIN, INTERVAL_BUTTON_DEFAULT_PIN){
         
     }
@@ -51,12 +49,14 @@ class Button : public Service {
     }
 
     void execute(){
+        pinMode(interval.first, INPUT);
+        pinMode(runTime.first, INPUT_PULLUP);
         bool changed = false;
         auto intervalStatus = digitalRead(interval.first);
         auto runStatus = digitalRead(runTime.first);
+        ESP_LOGI(typename(this), "Interval Status : %d, %d", interval.first, intervalStatus);
         if(intervalStatus != interval.second){
             if(!intervalStatus){
-                ESP_LOGI(typename(this), "Interval Status : %d", intervalStatus);
                 changed = true;
                 intervalTimePos = (intervalTimePos + 1) % MAX_MOTOR_INTERVAL;
                 auto nextTime = intervalTimeSet[intervalTimePos] * S_TO_MS_FACTOR;
@@ -69,7 +69,13 @@ class Button : public Service {
                 ESP_LOGI(typename(this), "Run Status : %d", runStatus);
                 changed = true;
                 auto nextTime = (this->message->intervalSpan / S_TO_MS_FACTOR);
+                auto nextTimeBackup = nextTime + 1;
                 nextTime = (nextTime % MAX_MOTOR_SPAN) + 1;
+                if(nextTimeBackup != nextTime){
+                    this->intervalTimePos = (intervalTimePos + 1) % MAX_MOTOR_INTERVAL;
+                    auto nextTime = intervalTimeSet[this->intervalTimePos] * S_TO_MS_FACTOR;
+                    this->message->intervalTime = nextTime;
+                }
                 this->message->intervalSpan = (nextTime * S_TO_MS_FACTOR);
             }
         }

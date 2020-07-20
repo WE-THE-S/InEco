@@ -27,6 +27,10 @@ const gpio_num_t OLED_CS_PIN = GPIO_NUM_12;
 const gpio_num_t OLED_DC_PIN = GPIO_NUM_17;
 const gpio_num_t OLED_RESET_PIN = GPIO_NUM_19;
 
+const uint16_t S_TO_MS_FACTOR = 1000u;
+const uint16_t MS_TO_US_FACTOR = S_TO_MS_FACTOR;
+const uint16_t MAX_MOTOR_SPAN = 5u;
+const uint16_t MAX_MOTOR_INTERVAL = 5u;
 const uint16_t MOTOR_DEFAULT_SPAN = 60000u;
 const uint16_t MOTOR_DEFAULT_TIME = 1000u;
 const uint16_t MOTOR_AIR_REMOVE_TIME = 1000u * 10u;
@@ -35,7 +39,7 @@ const uint16_t HTTP_SERVER_PORT = 80;
 
 const char *const SSID = "THES3";
 const char *const PASSWORD = "1234123412";
-const unsigned int WATER_LOW_THRESHOLD = 400u;
+const uint8_t WATER_LOW_THRESHOLD = 20u;
 const char *const WEBSOCKET_SERVER_HOST = "the-s.kr";
 const uint16_t WEBSOCKET_SERVER_PORT = 8081u;
 

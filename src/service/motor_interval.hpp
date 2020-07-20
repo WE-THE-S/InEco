@@ -67,7 +67,7 @@ class MotorInterval : public Service {
     public:
 
     MotorInterval() {
-        intervalEnable = false;
+        intervalEnable = true;
         onOff = false;
         lastIntervalStatus = MOTOR_STATUS::MOTOR_OFF;
         lastTime = 0;

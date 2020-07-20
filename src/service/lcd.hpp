@@ -68,7 +68,7 @@ private:
 
 public:
     LCD() {
-        intervalEnable = false;
+        intervalEnable = true;
         onOff = false;
         ledOn = false;
         intervalSpan = MOTOR_DEFAULT_SPAN;

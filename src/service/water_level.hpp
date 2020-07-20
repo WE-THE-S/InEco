@@ -107,7 +107,7 @@ public:
 		} else {
 			signal.onOff = 0u;
 		}
-        if(memcmp(&signal, &last, sizeof(water_level_service_signal_t)) != 0){
+        if(signal.value != last.value){
             sendAlarm(signal);
         }
         last = signal;

@@ -18,11 +18,13 @@ protected:
 
     inline void rightSend(device_communication_message_t packet){
 		#if CONTROL_BOARD == 1
+		if(packet.type == MESSAGE_TYPE::SET_COLOR){
 			for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
 		#endif
         this->right->write(packet.bytes, sizeof(device_communication_message_t));
 		#if CONTROL_BOARD == 1	
 			}
+		}
 		#endif
     }
 
@@ -32,11 +34,13 @@ protected:
 
     inline void bottomSend(device_communication_message_t packet){
 		#if CONTROL_BOARD == 1
+		if(packet.type == MESSAGE_TYPE::SET_COLOR){
 			for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
 		#endif
         this->bottom->write(packet.bytes, sizeof(device_communication_message_t));
 		#if CONTROL_BOARD == 1	
 			}
+		}
 		#endif
     }
     
@@ -45,6 +49,7 @@ protected:
 	}
 	
     void send(device_communication_message_t packet){
+		ESP_LOGD(typename(this), "All Send");
         rightSend(packet);
         bottomSend(packet);
     }

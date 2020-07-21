@@ -50,9 +50,7 @@ void setup() {
 #elif CONTROL_BOARD == 1
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(SSID, PASSWORD);
-	while (WiFi.status() != WL_CONNECTED) {
-		delay(100);
-	}
+	delay(3000);
 	ESP_LOGI(typename(this), "IP Address : %s ", WiFi.localIP().toString().c_str());
 	ESP_LOGI(typename(this), "Mac Address : %s", WiFi.macAddress().c_str());
 

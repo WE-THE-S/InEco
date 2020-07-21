@@ -12,8 +12,8 @@
 using namespace std;
 
 //초 단위임
-const uint32_t intervalTimeSet[] = {600, 1800, 7200, 21600, 43200};
-
+//const uint32_t intervalTimeSet[] = {600, 1800, 7200, 21600, 43200};
+const uint32_t intervalTimeSet[] = {10, 30, 60, 120, 240};
 class Button : public Service {
     protected:
         uint8_t intervalTimePos;
@@ -54,8 +54,8 @@ class Button : public Service {
         bool changed = false;
         auto intervalStatus = digitalRead(interval.first);
         auto runStatus = digitalRead(runTime.first);
-        ESP_LOGI(typename(this), "Interval Status : %d, %d", interval.first, intervalStatus);
         if(intervalStatus != interval.second){
+            ESP_LOGI(typename(this), "Interval Status : %d, %d", interval.first, intervalStatus);
             if(!intervalStatus){
                 changed = true;
                 intervalTimePos = (intervalTimePos + 1) % MAX_MOTOR_INTERVAL;

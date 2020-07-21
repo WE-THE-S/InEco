@@ -49,7 +49,7 @@ class Button : public Service {
     }
 
     void execute(){
-        pinMode(interval.first, INPUT);
+        pinMode(interval.first, INPUT_PULLUP);
         pinMode(runTime.first, INPUT_PULLUP);
         bool changed = false;
         auto intervalStatus = digitalRead(interval.first);
@@ -69,13 +69,7 @@ class Button : public Service {
                 ESP_LOGI(typename(this), "Run Status : %d", runStatus);
                 changed = true;
                 auto nextTime = (this->message->intervalSpan / S_TO_MS_FACTOR);
-                auto nextTimeBackup = nextTime + 1;
                 nextTime = (nextTime % MAX_MOTOR_SPAN) + 1;
-                if(nextTimeBackup != nextTime){
-                    this->intervalTimePos = (intervalTimePos + 1) % MAX_MOTOR_INTERVAL;
-                    auto nextTime = intervalTimeSet[this->intervalTimePos] * S_TO_MS_FACTOR;
-                    this->message->intervalTime = nextTime;
-                }
                 this->message->intervalSpan = (nextTime * S_TO_MS_FACTOR);
             }
         }

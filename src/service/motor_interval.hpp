@@ -33,13 +33,19 @@ class MotorInterval : public Service {
         MOTOR_STATUS sendMessage(const MOTOR_STATUS status) const {
             switch(status){
                 case MOTOR_STATUS::MOTOR_ON : {
-                    digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
-                    digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+                    #if CONTROL_BOARD == 1
+                        digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+                    #else
+                        digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
+                    #endif
                     break;
                 }
                 case MOTOR_STATUS::MOTOR_OFF : {
-                    digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
-                    digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                    #if CONTROL_BOARD == 1
+                        digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                    #else
+                        digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
+                    #endif
                     break;
                 }
                 default : break;
@@ -76,21 +82,30 @@ class MotorInterval : public Service {
         intervalTime = MOTOR_DEFAULT_TIME;
         pinMode(MOTOR_DEFAULT_PIN, OUTPUT);
         pinMode(WATER_SOLENOID_VALVE_PIN, OUTPUT);
-        digitalWrite(MOTOR_DEFAULT_PIN, LOW);
-        digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
+        #if CONTROL_BOARD == 1
+            digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+        #else
+            digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
+        #endif
     }
 
     void removeAir(){
-        digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
-        digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+        #if CONTROL_BOARD == 1
+            digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
+        #else
+            digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+        #endif
         airClearStartTime = millis();
     }
 
     void execute(){
         if(airClearStartTime != 0){
             if(airClearStartTime + MOTOR_AIR_REMOVE_TIME < millis()){
+                #if CONTROL_BOARD == 1
                 digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                #else
                 digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
+                #endif
                 airClearStartTime = 0;
             }
         }
@@ -136,6 +151,8 @@ class MotorInterval : public Service {
                 ESP_LOGI(typename(this), "Enable %u", this->intervalEnable);
                 ESP_LOGI(typename(this), "Span %u", this->intervalSpan);
                 ESP_LOGI(typename(this), "Time %u", this->intervalTime);
+                ESP_LOGI(typename(this), "LastRunningTime %u", this->lastTime);
+                ESP_LOGI(typename(this), "LastMotorStatus %u", this->lastIntervalStatus != MOTOR_STATUS::MOTOR_OFF);
             }else{
                 this->onOff = signal.onOff;
                 ESP_LOGI(typename(this), "Motor %s", this->onOff ? "ON" : "OFF");

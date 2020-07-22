@@ -45,6 +45,7 @@ private:
 	}
 
     void display(){
+        ESP_LOGD(typename(this), "Display update");
         u8g2.clearBuffer();
         u8g2.setDrawColor(2);
         u8g2.setFontMode(2);

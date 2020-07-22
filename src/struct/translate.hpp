@@ -17,6 +17,7 @@ protected:
     }
 
     inline void rightSend(device_communication_message_t packet){
+		ESP_LOGI(typename(this), "Right Send");
 		#if CONTROL_BOARD == 1
 			if(packet.type == MESSAGE_TYPE::SET_COLOR){
 				for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
@@ -35,6 +36,7 @@ protected:
     }
 
     inline void bottomSend(device_communication_message_t packet){
+		ESP_LOGI(typename(this), "Bottom Send");
 		#if CONTROL_BOARD == 1
 			if(packet.type == MESSAGE_TYPE::SET_COLOR){
 				for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
@@ -75,6 +77,9 @@ public:
 		this->right->begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, RIGHT_UART_RX, RIGHT_UART_TX);
 		this->bottom->begin(HARDWARE_UART_BAUDRATE, HARDWARE_UART_SERIAL_MODE, BOTTOM_UART_RX, BOTTOM_UART_TX);
 		this->master->begin(HARDWARE_UART_BAUDRATE);
+		ESP_LOGD(typename(this), "Serial Begin");
+		ESP_LOGI(typename(this), "Right baudrate : %u", this->right->baudRate());
+		ESP_LOGI(typename(this), "Bottom baudrate : %u", this->bottom->baudRate());
 	}
 	
 	virtual void recv() {

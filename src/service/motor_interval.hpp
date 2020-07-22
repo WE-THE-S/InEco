@@ -34,7 +34,7 @@ class MotorInterval : public Service {
             switch(status){
                 case MOTOR_STATUS::MOTOR_ON : {
                     #if CONTROL_BOARD == 1
-                        digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+                        ledcWrite(PWM_CHANNEL, PWM_HIGH);
                     #else
                         digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
                     #endif
@@ -42,7 +42,7 @@ class MotorInterval : public Service {
                 }
                 case MOTOR_STATUS::MOTOR_OFF : {
                     #if CONTROL_BOARD == 1
-                        digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                        ledcWrite(PWM_CHANNEL, PWM_LOW);
                     #else
                         digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
                     #endif
@@ -83,7 +83,9 @@ class MotorInterval : public Service {
         pinMode(MOTOR_DEFAULT_PIN, OUTPUT);
         pinMode(WATER_SOLENOID_VALVE_PIN, OUTPUT);
         #if CONTROL_BOARD == 1
-            digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+            ledcSetup(PWM_CHANNEL, PWM_FREQ, PWM_RESOLUTION);
+            ledcAttachPin(MOTOR_DEFAULT_PIN, PWM_CHANNEL);
+            ledcWrite(PWM_CHANNEL, PWM_LOW);
         #else
             digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
         #endif
@@ -91,9 +93,9 @@ class MotorInterval : public Service {
 
     void removeAir(){
         #if CONTROL_BOARD == 1
-            digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
+            ledcWrite(PWM_CHANNEL, PWM_MAX);
         #else
-            digitalWrite(MOTOR_DEFAULT_PIN, HIGH);
+            digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
         #endif
         airClearStartTime = millis();
     }
@@ -102,7 +104,7 @@ class MotorInterval : public Service {
         if(airClearStartTime != 0){
             if(airClearStartTime + MOTOR_AIR_REMOVE_TIME < millis()){
                 #if CONTROL_BOARD == 1
-                digitalWrite(MOTOR_DEFAULT_PIN, LOW);
+                ledcWrite(PWM_CHANNEL, PWM_LOW);
                 #else
                 digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
                 #endif

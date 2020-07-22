@@ -2,6 +2,7 @@
 #define __CONFIG_HPP__
 
 #include <Arduino.h>
+#include <inttypes.h>
 
 const uint32_t FW_VERSION = 0;
 const unsigned long HARDWARE_UART_BAUDRATE = 460800ul; //테스트용
@@ -45,6 +46,13 @@ const char *const PASSWORD = "1234123412";
 const uint8_t WATER_LOW_THRESHOLD = 20u;
 const char *const WEBSOCKET_SERVER_HOST = "the-s.kr";
 const uint16_t WEBSOCKET_SERVER_PORT = 8081u;
+
+const uint32_t PWM_FREQ = 5000;
+const uint8_t PWM_CHANNEL = 0;
+const uint8_t PWM_RESOLUTION = 8;
+const uint8_t PWM_HIGH = 30;
+const uint8_t PWM_LOW = 0;
+const uint8_t PWM_MAX = UINT8_MAX;
 
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \

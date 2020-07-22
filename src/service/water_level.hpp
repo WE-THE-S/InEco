@@ -54,6 +54,16 @@ private:
 		for (int i = 0; i < ATTINY1_HIGH_ADDR_SIZE; i++) {
 			waterRawValue[ATTINY2_LOW_ADDR_SIZE + i] = Wire.read();
 		}
+		#if CORE_DEBUG_LEVEL > 3
+		char* str = new char[256];
+		memset(str, 0x00, sizeof(char) * 256);
+		for(int i = 0;i < ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE; i++){
+			sprintf(&str[strlen(str)], "%u,", waterRawValue[i]);
+		}
+		ESP_LOGI(typename(this), "Water : {%s}", str);
+		delete[] str;
+		#endif
+
 	}
 
 public:
@@ -72,6 +82,8 @@ public:
 		for (int i = 0; i < ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE; i++) {
 			if (this->waterRawValue[i] >= THRESHOLD) {
 				signal.level = (5 * (i + 1));
+			}else{
+				break;
 			}
 		}
 

@@ -11,7 +11,7 @@
 class MotorHanlder : public MessageGpioControlHandler {
     public:
     MotorHanlder(gpio_num_t _motor) : MessageGpioControlHandler(_motor) {
-
+        
     }
 
     MotorHanlder() : MotorHanlder(MOTOR_DEFAULT_PIN) {

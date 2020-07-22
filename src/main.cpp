@@ -183,6 +183,8 @@ void setup() {
 	instance->add(&motorInterval);
 	instance->add(&lcd);
 	instance->add(&button);
+	motorInterval.removeAir();
+	delay(10000);
 #endif
 }
 

@@ -10,11 +10,6 @@
 #include <esp_adc_cal.h>
 #include <soc/rtc_cntl_reg.h>
 
-const uint8_t NO_TOUCH = 0xFE;
-const uint8_t THRESHOLD = 100;
-const uint8_t ATTINY1_HIGH_ADDR = 0x78;
-const uint8_t ATTINY2_LOW_ADDR = 0x77;
-
 class WaterLevel : public Service {
 private:
 	uint8_t waterRawValue[ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE] = {0, };
@@ -55,13 +50,13 @@ private:
 			waterRawValue[ATTINY2_LOW_ADDR_SIZE + i] = Wire.read();
 		}
 		#if CORE_DEBUG_LEVEL > 3
-		char* str = new char[256];
-		memset(str, 0x00, sizeof(char) * 256);
-		for(int i = 0;i < ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE; i++){
-			sprintf(&str[strlen(str)], "%u,", waterRawValue[i]);
-		}
-		ESP_LOGI(typename(this), "Water : {%s}", str);
-		delete[] str;
+			char* str = new char[256];
+			memset(str, 0x00, sizeof(char) * 256);
+			for(int i = 0;i < ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE; i++){
+				sprintf(&str[strlen(str)], "%u,", waterRawValue[i]);
+			}
+			ESP_LOGI(typename(this), "Water : {%s}", str);
+			delete[] str;
 		#endif
 
 	}

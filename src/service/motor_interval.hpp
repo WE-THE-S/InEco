@@ -93,6 +93,8 @@ class MotorInterval : public Service {
 
     void removeAir(){
         #if CONTROL_BOARD == 1
+            sendMessage(MOTOR_STATUS::MOTOR_OFF);
+            delay(MOTOR_COMMAND_TIMEOUT);
             ledcWrite(PWM_CHANNEL, PWM_MAX);
         #else
             digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);

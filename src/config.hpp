@@ -34,6 +34,7 @@ const uint16_t MAX_MOTOR_INTERVAL = 5u;
 const uint16_t MOTOR_DEFAULT_SPAN = 1000u;
 const uint32_t MOTOR_DEFAULT_TIME = 600u * S_TO_MS_FACTOR;
 const uint16_t MOTOR_AIR_REMOVE_TIME = 1000u * 10u;
+const uint16_t MOTOR_COMMAND_TIMEOUT = 1 * S_TO_MS_FACTOR;
 const uint8_t LED_COUNT = 4;
 const uint16_t HTTP_SERVER_PORT = 80;
 const uint8_t ATTINY1_HIGH_ADDR_SIZE = 12;
@@ -50,9 +51,11 @@ const uint16_t WEBSOCKET_SERVER_PORT = 8081u;
 const uint32_t PWM_FREQ = 5000;
 const uint8_t PWM_CHANNEL = 0;
 const uint8_t PWM_RESOLUTION = 8;
-const uint8_t PWM_HIGH = 30;
+const uint8_t PWM_HIGH = 15;
 const uint8_t PWM_LOW = 0;
 const uint8_t PWM_MAX = UINT8_MAX;
+const uint32_t I2C_TIMEOUT = 500;
+
 
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \

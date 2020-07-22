@@ -18,12 +18,12 @@ const gpio_num_t WATER_SOLENOID_VALVE_PIN = MOTOR_DEFAULT_PIN;
 const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_34;
 const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_13;
 const gpio_num_t LED_CONTROL_DEFAULT_PIN = ALARM_LED_DEFAULT_PIN;
-const gpio_num_t INTERVAL_BUTTON_DEFAULT_PIN = GPIO_NUM_16;
+const gpio_num_t INTERVAL_BUTTON_DEFAULT_PIN = GPIO_NUM_4;
 const gpio_num_t RUNTIME_BUTTON_DEFAULT_PIN = GPIO_NUM_15;
 
 const gpio_num_t OLED_CLK_PIN = GPIO_NUM_18;
 const gpio_num_t OLED_CS_PIN = GPIO_NUM_12;
-const gpio_num_t OLED_DC_PIN = GPIO_NUM_17;
+const gpio_num_t OLED_DC_PIN = GPIO_NUM_5;
 const gpio_num_t OLED_RESET_PIN = GPIO_NUM_19;
 
 const uint16_t S_TO_MS_FACTOR = 1000u;

@@ -17,15 +17,18 @@ protected:
     }
 
     inline void rightSend(device_communication_message_t packet){
-		ESP_LOGI(typename(this), "Right Send");
 		#if CONTROL_BOARD == 1
 			if(packet.type == MESSAGE_TYPE::SET_COLOR){
 				for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
+			ESP_LOGI(typename(this), "Right LED Send");
+		#else
+			ESP_LOGI(typename(this), "Right Send");
 		#endif
         this->right->write(packet.bytes, sizeof(device_communication_message_t));
 		#if CONTROL_BOARD == 1	
 				}
 			}else{
+				ESP_LOGI(typename(this), "Right Send");
 				this->right->write(packet.bytes, sizeof(device_communication_message_t));
 			}
 		#endif
@@ -36,15 +39,19 @@ protected:
     }
 
     inline void bottomSend(device_communication_message_t packet){
-		ESP_LOGI(typename(this), "Bottom Send");
+	
 		#if CONTROL_BOARD == 1
 			if(packet.type == MESSAGE_TYPE::SET_COLOR){
 				for(auto i = 0;i<PACKET_RETRY_COUNT;i++){
+			ESP_LOGI(typename(this), "Bottom LED Send");
+		#else
+			ESP_LOGI(typename(this), "Bottom Send");
 		#endif
         this->bottom->write(packet.bytes, sizeof(device_communication_message_t));
 		#if CONTROL_BOARD == 1	
 				}
 			}else{
+				ESP_LOGI(typename(this), "Bottom Send");
 				this->bottom->write(packet.bytes, sizeof(device_communication_message_t));
 			}
 		#endif

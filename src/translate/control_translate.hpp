@@ -10,15 +10,23 @@
 class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver {
     public:
         void recv(){
-            if(this->bottom->available()){
-                auto str = this->bottom->readString();
-                ESP_LOGI(typename(this), "Bottom : %d", this->right->available());
-                ESP_LOGI(typename(this), "Bottom : %s", str.c_str());
+            if(this->bottom->available() != 0){
+                auto len = this->bottom->available();
+                auto str = static_cast<char*>(calloc(sizeof(char), len + 1));
+                this->bottom->readBytes((uint8_t*)str, len);
+                ESP_LOGI(typename(this), "Bottom : %d", len);
+                ESP_LOGI(typename(this), "Bottom : %s", str);
+                this->bottom->flush();
+                free(str);
             }
-            if(this->right->available()){
-                auto str = this->right->readString();
-                ESP_LOGI(typename(this), "Right : %d", this->right->available());
-                ESP_LOGI(typename(this), "Right : %s", str.c_str());
+            if(this->right->available() != 0){
+                auto len = this->right->available();
+                auto str = static_cast<char*>(calloc(sizeof(char), len + 1));
+                this->right->readBytes((uint8_t*)str, len);
+                ESP_LOGI(typename(this), "Right : %d", len);
+                ESP_LOGI(typename(this), "Right : %s", str);
+                this->right->flush();
+                free(str);
             }
         }
 

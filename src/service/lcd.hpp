@@ -10,6 +10,7 @@
 #include <cmath>
 #include <cstdlib>
 
+//LCD 인스턴스 생성
 U8G2_SSD1327_WS_128X128_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/OLED_CS_PIN, /* dc=*/OLED_DC_PIN, /* reset=*/OLED_RESET_PIN);
 
 class LCD : public Service {
@@ -29,12 +30,15 @@ private:
 	//onOff
 	bool onOff;
 
+    //alarm 상태
 	bool ledOn;
 	
+    //문자열 저장용 임시 변수
     char buffer[32] = {
 		0,
 	};
 
+    //대부분 문자열 출력 형식이 비슷해서 형식에 맞게 출력하는 함수
 	void messageBuilder(const char *key, const char *value) {
 		memset(buffer, 0x00, sizeof(char) * 32);
 		sprintf(buffer, "%s : %s", key, value);
@@ -45,6 +49,7 @@ private:
 	}
 
     void display(){
+        //OLED에 표시됀 내용을 업데이트
         ESP_LOGD(typename(this), "Display update");
         u8g2.clearBuffer();
         u8g2.setDrawColor(2);
@@ -69,6 +74,7 @@ private:
 
 public:
     LCD() {
+        //LCD에 표시할 초기 데이터 init
         intervalEnable = true;
         onOff = false;
         ledOn = false;
@@ -77,14 +83,17 @@ public:
         waterLevel = 0u;
     }
     void execute(){
+        //LCD초기화와 화면 표출
         u8g2.begin();
         this->display();
     }
 
+    //다른 서비스에서 broadcast 메세지가 온경우 실행
     void onMessage(const service_signal_t message) {
         bool isSet = true;
         switch (message.type) {
             case SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET: {
+                //모터 실행 주기가 변경됀 경우
                 motor_interval_service_signal_t signal;
                 signal.value = message.value;
                 if (signal.isIntervalSet) {
@@ -101,6 +110,7 @@ public:
                 break;
             }
             case SERVICE_SIGNAL_TYPE::ALARM: {
+                //알람 메세지가 전달됀 경우
                 water_level_service_signal_t signal;
                 signal.value = message.value;
                 if(this->ledOn != signal.onOff){

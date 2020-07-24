@@ -4,16 +4,19 @@
 #include <Arduino.h>
 #include <inttypes.h>
 
+//통신할때 사용하는 상수
 const uint32_t FW_VERSION = 0;
 const unsigned long HARDWARE_UART_BAUDRATE = 460800ul; //테스트용
 const uint32_t HARDWARE_UART_SERIAL_MODE = SERIAL_8N1;
 const size_t PACKET_RETRY_COUNT = 5;
 
+//통신용 GPIO 설정
 const gpio_num_t BOTTOM_UART_RX = GPIO_NUM_14;
 const gpio_num_t BOTTOM_UART_TX = GPIO_NUM_27;
 const gpio_num_t RIGHT_UART_RX = GPIO_NUM_26;
 const gpio_num_t RIGHT_UART_TX = GPIO_NUM_25;
 
+//주변 모듈과 통신하기 위한 GPIO 설정
 const gpio_num_t MOTOR_DEFAULT_PIN = GPIO_NUM_33;
 const gpio_num_t WATER_SOLENOID_VALVE_PIN = MOTOR_DEFAULT_PIN;
 const gpio_num_t WATER_LEVEL_SENSOR_DEFAULT_PIN = GPIO_NUM_34;
@@ -22,11 +25,13 @@ const gpio_num_t LED_CONTROL_DEFAULT_PIN = ALARM_LED_DEFAULT_PIN;
 const gpio_num_t INTERVAL_BUTTON_DEFAULT_PIN = GPIO_NUM_4;
 const gpio_num_t RUNTIME_BUTTON_DEFAULT_PIN = GPIO_NUM_15;
 
+//OLED GPIO 설정
 const gpio_num_t OLED_CLK_PIN = GPIO_NUM_18;
 const gpio_num_t OLED_CS_PIN = GPIO_NUM_12;
 const gpio_num_t OLED_DC_PIN = GPIO_NUM_5;
 const gpio_num_t OLED_RESET_PIN = GPIO_NUM_19;
 
+//시간 계산용 상수
 const uint16_t S_TO_MS_FACTOR = 1000u;
 const uint16_t MS_TO_US_FACTOR = S_TO_MS_FACTOR;
 const uint16_t MAX_MOTOR_SPAN = 5u;
@@ -49,7 +54,7 @@ const uint16_t WEBSOCKET_SERVER_PORT = 8081u;
 const uint32_t PWM_FREQ = 5000;
 const uint8_t PWM_CHANNEL = 0;
 const uint8_t PWM_RESOLUTION = 8;
-const uint8_t PWM_HIGH = 15;
+const uint8_t PWM_HIGH = 30;
 const uint8_t PWM_LOW = 0;
 const uint8_t PWM_MAX = UINT8_MAX;
 
@@ -61,12 +66,12 @@ const uint8_t ATTINY1_HIGH_ADDR = 0x78;
 const uint8_t ATTINY2_LOW_ADDR = 0x77;
 const uint8_t ATTINY1_HIGH_ADDR_SIZE = 12;
 const uint8_t ATTINY2_LOW_ADDR_SIZE = 8;
+
+//WATER 센서 threshold값
 const int WATER_SENSOR_VALUE_MIN = 250;
 const int WATER_SENSOR_VALUE_MAX = 255;
 
-
-
-
+//웹 서버 표출용 http 코드
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \
 <h1>Interval ON/OFF</h1>\

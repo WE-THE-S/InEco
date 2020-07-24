@@ -5,6 +5,8 @@
 #include <Arduino.h>
 
 #if LED_BOARD == 1
+
+//LED 보드에서 사용하는 핸들러 초기화
 #include "./handler/led/led_handler.hpp"
 #include "./handler/led/motor_handler.hpp"
 #include "./translate/led_translate.hpp"
@@ -29,6 +31,7 @@ LedTranslate translate;
 #include <WiFiType.h>
 #include <WiFiClient.h>
 
+//컨트롤 보드에서 사용하는 핸들러와 인스턴스들 초기화
 WebServer server(HTTP_SERVER_PORT);
 Button button;
 ControlTranslate translate;
@@ -48,6 +51,7 @@ void setup() {
 	instance->add(&motor);
 	ESP_LOGI(typename(this), "Start");
 #elif CONTROL_BOARD == 1
+	//컨트롤 보드는 웹으로 제어가 가능하게끔 WiFi 연동 로직
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(SSID, PASSWORD);
 	delay(3000);
@@ -173,9 +177,11 @@ void setup() {
 		server.send(200, "text/plain", enable);
 	});
 
+	//웹 서버 시작과 lcd 인스턴스 초기화
 	server.begin();
 	lcd.execute();
 
+	//서비스 시그널을 받아야할 객체들 추가
 	auto instance = Broadcast<service_signal_t>::getInstance();
 	instance->add(&ledAlarm);
 	instance->add(&waterLevel);
@@ -183,14 +189,19 @@ void setup() {
 	instance->add(&motorInterval);
 	instance->add(&lcd);
 	instance->add(&button);
+	
+	//처음 시작할때 라인에 있는 공기 뺴기 작업 수행
 	motorInterval.removeAir();
+	//10초 딜레이
 	delay(10000);
 #endif
 }
 
 void loop() {
+	//LED보드의 경우 주변 신호만 받아서 처리
 	translate.recv();
 #if CONTROL_BOARD == 1
+	//컨트롤 보드의 경우 주변 모터 신호나 버튼, 서버, 유량 체크등의 작업 수행ㄴ
 	waterLevel.execute();
 	motorInterval.execute();
 	button.execute();

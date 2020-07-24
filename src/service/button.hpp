@@ -9,11 +9,10 @@
 #include "../struct/packet.hpp"
 #include "../utils/broadcast.hpp"
 
-using namespace std;
-
-//초 단위임
-//const uint32_t intervalTimeSet[] = {600, 1800, 7200, 21600, 43200};
-const uint32_t intervalTimeSet[] = {10, 30, 60, 120, 240};
+using namespace std; 
+//초 단위
+const uint32_t intervalTimeSet[] = {600, 1800, 7200, 21600, 43200};
+//const uint32_t intervalTimeSet[] = {10, 30, 60, 120, 240};
 class Button : public Service {
     protected:
         uint8_t intervalTimePos;

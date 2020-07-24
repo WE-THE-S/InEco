@@ -30,8 +30,11 @@ class MotorInterval : public Service {
         //onOff
         bool onOff;
 
+        //모터 세기를 설정
         MOTOR_STATUS sendMessage(const MOTOR_STATUS status) const {
             switch(status){
+                //분사가 필요하면 최소 출력으로 모터를 송출
+                //control board가 아닌경우 솔레노이드 벨브를 엶
                 case MOTOR_STATUS::MOTOR_ON : {
                     #if CONTROL_BOARD == 1
                         ledcWrite(PWM_CHANNEL, PWM_HIGH);
@@ -40,9 +43,10 @@ class MotorInterval : public Service {
                     #endif
                     break;
                 }
+                //공기가 분사 이후에도 계속 남아있는 문제가 있어서 최소 출력으로 계속 가동
                 case MOTOR_STATUS::MOTOR_OFF : {
                     #if CONTROL_BOARD == 1
-                        ledcWrite(PWM_CHANNEL, PWM_LOW);
+                        //ledcWrite(PWM_CHANNEL, PWM_LOW);
                     #else
                         digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
                     #endif
@@ -50,6 +54,7 @@ class MotorInterval : public Service {
                 }
                 default : break;
             }
+            //주변 장치들에 뿌리기 위해서 communication_service에 명령어 패킷을 전달
             service_signal_t signal;
             communcation_service_signal_t com;
             motor_message_t* motorMessage = new motor_message_t;
@@ -72,6 +77,7 @@ class MotorInterval : public Service {
         }
     public:
 
+    //모터 서비스 init
     MotorInterval() {
         intervalEnable = true;
         onOff = false;
@@ -85,12 +91,14 @@ class MotorInterval : public Service {
         #if CONTROL_BOARD == 1
             ledcSetup(PWM_CHANNEL, PWM_FREQ, PWM_RESOLUTION);
             ledcAttachPin(MOTOR_DEFAULT_PIN, PWM_CHANNEL);
-            ledcWrite(PWM_CHANNEL, PWM_LOW);
+            //ledcWrite(PWM_CHANNEL, PWM_LOW);
         #else
             digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
         #endif
     }
 
+    //공기를 제거하는 과정
+    //모든 솔레노이드 벨브를 닫고 최대 출력으로 물을 순환시켜, 공기를 제거함
     void removeAir(){
         #if CONTROL_BOARD == 1
             sendMessage(MOTOR_STATUS::MOTOR_OFF);
@@ -102,11 +110,14 @@ class MotorInterval : public Service {
         airClearStartTime = millis();
     }
 
+    //계속 실행되면서 시간을 체크
+    //시간은 
     void execute(){
         if(airClearStartTime != 0){
             if(airClearStartTime + MOTOR_AIR_REMOVE_TIME < millis()){
                 #if CONTROL_BOARD == 1
-                ledcWrite(PWM_CHANNEL, PWM_LOW);
+                //ledcWrite(PWM_CHANNEL, PWM_LOW);
+                ledcWrite(PWM_CHANNEL, PWM_HIGH);
                 #else
                 digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
                 #endif
@@ -140,8 +151,11 @@ class MotorInterval : public Service {
         }
     }
 
+    //다른 서비스에서 broadcast 메세지가 온경우 실행
     void onMessage(const service_signal_t message){
+        //메세지 종류가 모터 제어 관련이면
         if(message.type == SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET){
+            //내부 내용을 파싱해서 필요한 정보를 설정
             motor_interval_service_signal_t signal;
             signal.value = message.value;
             if(signal.isIntervalSet){

@@ -13,6 +13,7 @@ class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver
         void recv(){
             //아래쪽에 연결됀 보드에서 보낸 데이터가 있을 경우 처리
             if(this->bottom->available() != 0){
+                #if DEVICE_UART_DEBUG
                 auto len = this->bottom->available();
                 auto str = static_cast<char*>(calloc(sizeof(char), len + 1));
                 this->bottom->readBytes((uint8_t*)str, len);
@@ -22,9 +23,13 @@ class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver
                 this->bottom->flush();
                 //버퍼 지움
                 free(str);
+                #else
+                this->bottom->flush();
+                #endif
             }
             //오른쪽에 연결됀 보드에서 보낸 데이터가 있을 경우 처리
             if(this->right->available() != 0){
+                #if DEVICE_UART_DEBUG
                 auto len = this->right->available();
                 auto str = static_cast<char*>(calloc(sizeof(char), len + 1));
                 this->right->readBytes((uint8_t*)str, len);
@@ -34,6 +39,9 @@ class ControlTranslate : public Translate, public ServiceSignalBroadcastReceiver
                 this->right->flush();
                 //버퍼 지움
                 free(str);
+                #else
+                this->right->flush();
+                #endif
             }
         }
 

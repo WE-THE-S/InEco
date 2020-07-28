@@ -1,6 +1,10 @@
 #ifndef __CONFIG_HPP__
 #define __CONFIG_HPP__
 
+
+#define WATER_LEVEL_DEBUG 1
+#define DEVICE_UART_DEBUG 0
+
 #include <Arduino.h>
 #include <inttypes.h>
 

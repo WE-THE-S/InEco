@@ -59,7 +59,7 @@ private:
 			waterRawValue[ATTINY2_LOW_ADDR_SIZE + i] = Wire.read();
 		}
 		//water level debug가 활성화 됀 경우, register raw table을 log로 보여줌
-		#ifdef WATER_LEVEL_DEBUG
+		#if WATER_LEVEL_DEBUG == 1
 			char* str = new char[256];
 			memset(str, 0x00, sizeof(char) * 256);
 			for(int i = 0;i < ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE; i++){

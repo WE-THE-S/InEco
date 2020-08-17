@@ -40,6 +40,7 @@ private:
 		//최대 500ms까지 대기하다가 넘어감
 		while (ATTINY2_LOW_ADDR_SIZE != Wire.available()){
 			if(now + I2C_TIMEOUT> millis()){
+				ESP_LOGW(typename(this), "I2C timeout low address");
 				break;
 			}
 		}
@@ -51,6 +52,7 @@ private:
 		//최대 500ms까지 대기하다가 넘어감
 		while (ATTINY1_HIGH_ADDR_SIZE != Wire.available()){
 			if(now + I2C_TIMEOUT> millis()){
+				ESP_LOGW(typename(this), "I2C timeout high address");
 				break;
 			}
 		}

@@ -10,12 +10,9 @@
 #include <esp_adc_cal.h>
 #include <soc/rtc_cntl_reg.h>
 
-//grove waterlevel 모듈과 통신하여 현재 유량을 측정하는 클래스
+//analog waterlevel 모듈과 통신하여 현재 유량을 측정하는 클래스
 class WaterLevel : public Service {
 private:
-	//레지스터 값 저장용 변수
-	uint8_t waterRawValue[ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE] = {0, };
-
 	//마지막으로 보낸 현재 유량 상태
 	water_level_service_signal_t last;
 
@@ -33,50 +30,14 @@ private:
 	}
 
 	//water level 모듈에서 레지스터를 읽어오는 함수
-	void getRawValue(void) {
-		uint32_t now = millis();
-		memset(waterRawValue, 0, ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE);
-		Wire.requestFrom(ATTINY2_LOW_ADDR, ATTINY2_LOW_ADDR_SIZE);
-		//최대 500ms까지 대기하다가 넘어감
-		while (ATTINY2_LOW_ADDR_SIZE != Wire.available()){
-			if(now + I2C_TIMEOUT> millis()){
-				ESP_LOGW(typename(this), "I2C timeout low address");
-				break;
-			}
-		}
-			
-		for (int i = 0; i < ATTINY2_LOW_ADDR_SIZE; i++) {
-			waterRawValue[i] = Wire.read(); 
-		}
-		Wire.requestFrom(ATTINY1_HIGH_ADDR, ATTINY1_HIGH_ADDR_SIZE);
-		//최대 500ms까지 대기하다가 넘어감
-		while (ATTINY1_HIGH_ADDR_SIZE != Wire.available()){
-			if(now + I2C_TIMEOUT> millis()){
-				ESP_LOGW(typename(this), "I2C timeout high address");
-				break;
-			}
-		}
-
-		for (int i = 0; i < ATTINY1_HIGH_ADDR_SIZE; i++) {
-			waterRawValue[ATTINY2_LOW_ADDR_SIZE + i] = Wire.read();
-		}
-		//water level debug가 활성화 됀 경우, register raw table을 log로 보여줌
-		#if WATER_LEVEL_DEBUG == 1
-			char* str = new char[256];
-			memset(str, 0x00, sizeof(char) * 256);
-			for(int i = 0;i < ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE; i++){
-				sprintf(&str[strlen(str)], "%u,", waterRawValue[i]);
-			}
-			ESP_LOGI(typename(this), "Water : {%s}", str);
-			delete[] str;
-		#endif
-
+	uint16_t getRawValue(void) {
+		return analogRead(pin);
 	}
 
 public:
 	//i2c 인스턴스 초기화
 	WaterLevel(gpio_num_t _pin) : pin(_pin) {
-        Wire.begin();
+        
 	}
 
 	WaterLevel() : WaterLevel(WATER_LEVEL_SENSOR_DEFAULT_PIN) {
@@ -84,19 +45,14 @@ public:
 
 	void execute() {
 		//센서 값 파싱
-		this->getRawValue();
-
+		const uint16_t rawValue = this->getRawValue();
+		const uint16_t minCheckValue = max(rawValue, WATER_MIN_THRESHOLD);
+		const uint16_t maxCheckValue = min(minCheckValue, WATER_MAX_THRESHOLD);
+		
+		ESP_LOGE(typename(this), "%u", rawValue);
         water_level_service_signal_t signal;
-		signal.level = 0;
-		//레지스터에 저장됀 값으로 현재 유량 계산
-		for (int i = 0; i < ATTINY2_LOW_ADDR_SIZE + ATTINY1_HIGH_ADDR_SIZE; i++) {
-			if (this->waterRawValue[i] >= THRESHOLD) {
-				signal.level = (5 * (i + 1));
-			}else{
-				break;
-			}
-		}
-
+		signal.level = map(maxCheckValue, WATER_MIN_THRESHOLD, WATER_MAX_THRESHOLD, 0, 100);
+		
 		//만약 현재 유량이 일정 수치보다 낮을 경우 alarm 신호 활성화
 		if (signal.level <= WATER_LOW_THRESHOLD) {
             signal.onOff = 1u;

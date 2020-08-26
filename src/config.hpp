@@ -2,7 +2,9 @@
 #define __CONFIG_HPP__
 
 
-#define WATER_LEVEL_DEBUG 1
+#ifndef WATER_LEVEL_DEBUG
+  #define WATER_LEVEL_DEBUG 0
+#endif
 #define DEVICE_UART_DEBUG 0
 
 #include <Arduino.h>
@@ -70,6 +72,8 @@ const uint8_t ATTINY1_HIGH_ADDR = 0x78;
 const uint8_t ATTINY2_LOW_ADDR = 0x77;
 const uint8_t ATTINY1_HIGH_ADDR_SIZE = 12;
 const uint8_t ATTINY2_LOW_ADDR_SIZE = 8;
+const uint16_t WATER_MAX_THRESHOLD = 1660;
+const uint16_t WATER_MIN_THRESHOLD = 820;
 
 //WATER 센서 threshold값
 const int WATER_SENSOR_VALUE_MIN = 250;

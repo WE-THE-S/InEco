@@ -65,13 +65,6 @@ const uint8_t PWM_LOW = 0;
 const uint8_t PWM_MAX = UINT8_MAX;
 
 //water sensor
-const uint32_t I2C_TIMEOUT = 500;
-const uint8_t NO_TOUCH = 0xFE;
-const uint8_t THRESHOLD = 100;
-const uint8_t ATTINY1_HIGH_ADDR = 0x78;
-const uint8_t ATTINY2_LOW_ADDR = 0x77;
-const uint8_t ATTINY1_HIGH_ADDR_SIZE = 12;
-const uint8_t ATTINY2_LOW_ADDR_SIZE = 8;
 const uint16_t WATER_MAX_THRESHOLD = 1660;
 const uint16_t WATER_MIN_THRESHOLD = 820;
 

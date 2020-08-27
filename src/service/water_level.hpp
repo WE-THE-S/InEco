@@ -8,6 +8,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <esp_adc_cal.h>
+#include <deque>
+#include <cmath>
 #include <soc/rtc_cntl_reg.h>
 
 //analog waterlevel 모듈과 통신하여 현재 유량을 측정하는 클래스
@@ -18,6 +20,7 @@ private:
 
 	//원래 analog타입 water level 센서를 사용했을때 사용하던 레거시 변수
 	gpio_num_t pin;
+	std::deque<uint16_t> buffer;
 
 	//알람 신호를 주변 서비스에 뿌리는 함수
 	inline void sendAlarm(const water_level_service_signal_t value) {
@@ -31,7 +34,12 @@ private:
 
 	//water level 모듈에서 레지스터를 읽어오는 함수
 	uint16_t getRawValue(void) {
-		return analogRead(pin);
+		adc_power_on();
+		ESP_ERROR_CHECK(adc1_config_channel_atten(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL, ADC_ATTEN_11db));
+		adcAttachPin(pin);
+		auto read_raw = adc1_get_raw(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL);
+		adc_power_off();
+		return static_cast<uint16_t>(read_raw);
 	}
 
 public:
@@ -49,9 +57,16 @@ public:
 		const uint16_t minCheckValue = max(rawValue, WATER_MIN_THRESHOLD);
 		const uint16_t maxCheckValue = min(minCheckValue, WATER_MAX_THRESHOLD);
 		
-		ESP_LOGE(typename(this), "%u", rawValue);
-        water_level_service_signal_t signal;
-		signal.level = map(maxCheckValue, WATER_MIN_THRESHOLD, WATER_MAX_THRESHOLD, 0, 100);
+		while(buffer.size() > WATER_RAW_BUFFER_SIZE){
+			buffer.pop_front();
+		}
+		buffer.push_back(maxCheckValue);
+		uint16_t avg = std::accumulate(buffer.begin(), buffer.end(), 0.0) / buffer.size();
+		//for debug
+		ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);
+			
+		water_level_service_signal_t signal;
+		signal.level = std::min(map(avg, WATER_MIN_THRESHOLD, WATER_MAX_THRESHOLD, 0, 101), 100L);
 		
 		//만약 현재 유량이 일정 수치보다 낮을 경우 alarm 신호 활성화
 		if (signal.level <= WATER_LOW_THRESHOLD) {

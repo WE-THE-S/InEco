@@ -7,6 +7,7 @@
 #endif
 #define DEVICE_UART_DEBUG 0
 
+#include <driver/adc.h>
 #include <Arduino.h>
 #include <inttypes.h>
 
@@ -30,6 +31,8 @@ const gpio_num_t ALARM_LED_DEFAULT_PIN = GPIO_NUM_13;
 const gpio_num_t LED_CONTROL_DEFAULT_PIN = ALARM_LED_DEFAULT_PIN;
 const gpio_num_t INTERVAL_BUTTON_DEFAULT_PIN = GPIO_NUM_4;
 const gpio_num_t RUNTIME_BUTTON_DEFAULT_PIN = GPIO_NUM_15;
+
+const adc1_channel_t WATER_LEVEL_SENSOR_DEFAULT_CHANNEL = ADC1_CHANNEL_6;
 
 //OLED GPIO 설정
 const gpio_num_t OLED_CLK_PIN = GPIO_NUM_18;
@@ -65,12 +68,9 @@ const uint8_t PWM_LOW = 0;
 const uint8_t PWM_MAX = UINT8_MAX;
 
 //water sensor
-const uint16_t WATER_MAX_THRESHOLD = 1660;
-const uint16_t WATER_MIN_THRESHOLD = 820;
-
-//WATER 센서 threshold값
-const int WATER_SENSOR_VALUE_MIN = 250;
-const int WATER_SENSOR_VALUE_MAX = 255;
+const uint16_t WATER_MAX_THRESHOLD = 1520;
+const uint16_t WATER_MIN_THRESHOLD = 1200;
+const uint16_t WATER_RAW_BUFFER_SIZE = 1000;
 
 //웹 서버 표출용 http 코드
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\

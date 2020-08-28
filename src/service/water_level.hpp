@@ -18,6 +18,9 @@ private:
 	//마지막으로 보낸 현재 유량 상태
 	water_level_service_signal_t last;
 
+	//처음 보내는 패킷인지
+	bool isFirstSend;
+
 	//원래 analog타입 water level 센서를 사용했을때 사용하던 레거시 변수
 	gpio_num_t pin;
 	std::deque<uint16_t> buffer;
@@ -45,7 +48,7 @@ private:
 public:
 	//i2c 인스턴스 초기화
 	WaterLevel(gpio_num_t _pin) : pin(_pin) {
-        
+		isFirstSend = true;
 	}
 
 	WaterLevel() : WaterLevel(WATER_LEVEL_SENSOR_DEFAULT_PIN) {
@@ -63,8 +66,11 @@ public:
 		buffer.push_back(maxCheckValue);
 		uint16_t avg = std::accumulate(buffer.begin(), buffer.end(), 0.0) / buffer.size();
 		//for debug
-		ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);
-			
+		#ifdef WATER_LEVEL_DEBUG
+			#if WATER_LEVEL_DEBUG == 1
+			ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);
+			#endif
+		#endif	
 		water_level_service_signal_t signal;
 		signal.level = std::min(map(avg, WATER_MIN_THRESHOLD, WATER_MAX_THRESHOLD, 0, 101), 100L);
 		
@@ -76,8 +82,9 @@ public:
 		}
 
 		//마지막으로 보낸 신호와 지금 계산됀 값이 다를 경우 신호 전송
-        if(signal.level != last.level){
+        if(signal.level != last.level || isFirstSend){
             sendAlarm(signal);
+			isFirstSend = false;
         }
         last = signal;
 	}

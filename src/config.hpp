@@ -2,9 +2,7 @@
 #define __CONFIG_HPP__
 
 
-#ifndef WATER_LEVEL_DEBUG
-  #define WATER_LEVEL_DEBUG 0
-#endif
+#define WATER_LEVEL_DEBUG 0
 #define DEVICE_UART_DEBUG 0
 
 #include <driver/adc.h>
@@ -69,7 +67,7 @@ const uint8_t PWM_MAX = UINT8_MAX;
 
 //water sensor
 const uint16_t WATER_MAX_THRESHOLD = 1520;
-const uint16_t WATER_MIN_THRESHOLD = 1200;
+const uint16_t WATER_MIN_THRESHOLD = 600;
 const uint16_t WATER_RAW_BUFFER_SIZE = 1000;
 
 //웹 서버 표출용 http 코드

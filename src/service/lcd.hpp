@@ -38,6 +38,31 @@ private:
 		0,
 	};
 
+    char timeFormat[4][3] = {
+        {'m', 's', '\0'},
+        {'s', '\0'},
+        {'m', '\0'},
+        {'h', '\0'}
+    };
+
+    std::pair<char*, int> timeLevel(uint32_t time) {
+        std::pair<char*, int> result;
+        if(time < 1000){
+            result.first = timeFormat[0];
+            result.second = time;
+        }else if(time < 1000 * 60){
+            result.first = timeFormat[1];
+            result.second = (time / 1000);
+        }else if(time < 1000 * 60 * 60){
+            result.first = timeFormat[2];
+            result.second = (time / 60 / 1000);
+        }else{
+            result.first = timeFormat[3];
+            result.second = (time / 1000 / 60 / 60);
+        }
+        return result;
+    }
+
     //대부분 문자열 출력 형식이 비슷해서 형식에 맞게 출력하는 함수
 	void messageBuilder(const char *key, const char *value) {
 		memset(buffer, 0x00, sizeof(char) * 32);
@@ -61,9 +86,11 @@ private:
         u8g2.setFont(u8g2_font_profont15_tr);
         this->messageBuilder("Interval", this->intervalEnable ? "Enable" : "Disable");
         u8g2.drawStr(0, 37, buffer);
-        this->messageBuilder("Span", this->intervalSpan, "ms");
+        auto span = timeLevel(this->intervalSpan);
+        this->messageBuilder("Span", span.second, span.first);
         u8g2.drawStr(0, 52, buffer);
-        this->messageBuilder("Time", this->intervalTime, "ms");
+        auto time = timeLevel(this->intervalTime);
+        this->messageBuilder("Time", time.second, time.first);
         u8g2.drawStr(0, 67, buffer);
         this->messageBuilder("level", this->waterLevel, "%");
         u8g2.drawStr(0, 82, buffer);

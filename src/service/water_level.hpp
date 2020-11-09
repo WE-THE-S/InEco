@@ -40,8 +40,15 @@ private:
 		adc_power_on();
 		ESP_ERROR_CHECK(adc1_config_channel_atten(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL, ADC_ATTEN_11db));
 		adcAttachPin(pin);
-		auto read_raw = adc1_get_raw(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL);
+		static vector<uint16_t> rawBuffer;
+		rawBuffer.resize(WATER_RAW_BUFFER_SIZE);
+		for(auto i = 0;i<WATER_RAW_BUFFER_SIZE;i++){
+			rawBuffer[i] = adc1_get_raw(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL);
+		}
+		
+		auto read_raw = *std::min_element(rawBuffer.begin(), rawBuffer.end());
 		adc_power_off();
+		rawBuffer.clear();
 		return static_cast<uint16_t>(read_raw);
 	}
 
@@ -64,7 +71,7 @@ public:
 			buffer.pop_front();
 		}
 		buffer.push_back(maxCheckValue);
-		uint16_t avg = *std::min_element(buffer.begin(), buffer.end());
+		uint16_t avg = std::accumulate(buffer.begin(), buffer.end(), 0.0) / buffer.size();
 		//for debug
 		#if WATER_LEVEL_DEBUG == 1
 		ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);

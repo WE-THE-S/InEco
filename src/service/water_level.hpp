@@ -64,12 +64,10 @@ public:
 			buffer.pop_front();
 		}
 		buffer.push_back(maxCheckValue);
-		uint16_t avg = std::accumulate(buffer.begin(), buffer.end(), 0.0) / buffer.size();
+		uint16_t avg = *std::min_element(buffer.begin(), buffer.end());
 		//for debug
-		#ifdef WATER_LEVEL_DEBUG
-			#if WATER_LEVEL_DEBUG == 1
-			ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);
-			#endif
+		#if WATER_LEVEL_DEBUG == 1
+		ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);
 		#endif	
 		water_level_service_signal_t signal;
 		signal.level = std::min(map(avg, WATER_MIN_THRESHOLD, WATER_MAX_THRESHOLD, 0, 101), 100L);

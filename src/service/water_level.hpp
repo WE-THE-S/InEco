@@ -40,15 +40,8 @@ private:
 		adc_power_on();
 		ESP_ERROR_CHECK(adc1_config_channel_atten(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL, ADC_ATTEN_11db));
 		adcAttachPin(pin);
-		static vector<uint16_t> rawBuffer;
-		rawBuffer.resize(WATER_RAW_BUFFER_SIZE);
-		for(auto i = 0;i<WATER_RAW_BUFFER_SIZE;i++){
-			rawBuffer[i] = adc1_get_raw(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL);
-		}
-		
-		auto read_raw = *std::min_element(rawBuffer.begin(), rawBuffer.end());
+		auto read_raw =  adc1_get_raw(WATER_LEVEL_SENSOR_DEFAULT_CHANNEL);
 		adc_power_off();
-		rawBuffer.clear();
 		return static_cast<uint16_t>(read_raw);
 	}
 
@@ -66,17 +59,20 @@ public:
 		const uint16_t rawValue = this->getRawValue();
 		const uint16_t minCheckValue = max(rawValue, WATER_MIN_THRESHOLD);
 		const uint16_t maxCheckValue = min(minCheckValue, WATER_MAX_THRESHOLD);
-		
 		while(buffer.size() > WATER_RAW_BUFFER_SIZE){
 			buffer.pop_front();
 		}
 		buffer.push_back(maxCheckValue);
 		uint16_t avg = std::accumulate(buffer.begin(), buffer.end(), 0.0) / buffer.size();
 		//for debug
-		#if WATER_LEVEL_DEBUG == 1
-		ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);
-		#endif	
+		static int count;
+		if(count > 1000){
+			count = 0;
+			ESP_LOGE(typename(this), "%u : %u", buffer.size(), avg);
+		}
+		count++;
 		water_level_service_signal_t signal;
+		 
 		signal.level = std::min(map(avg, WATER_MIN_THRESHOLD, WATER_MAX_THRESHOLD, 0, 101), 100L);
 		
 		//만약 현재 유량이 일정 수치보다 낮을 경우 alarm 신호 활성화

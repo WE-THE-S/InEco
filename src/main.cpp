@@ -191,8 +191,8 @@ void setup() {
 	instance->add(&button);
 	
 	//처음 시작할때 라인에 있는 공기 뺴기 작업 수행
-	motorInterval.removeAir();
-	delay(MOTOR_AIR_REMOVE_TIME);
+	//motorInterval.removeAir();
+	//delay(MOTOR_AIR_REMOVE_TIME);
 #endif
 }
 

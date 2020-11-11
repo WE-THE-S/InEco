@@ -18,6 +18,7 @@ private:
 	//마지막으로 보낸 현재 유량 상태
 	water_level_service_signal_t last;
 
+	uint64_t lastSend;
 	//처음 보내는 패킷인지
 	bool isFirstSend;
 
@@ -82,10 +83,18 @@ public:
 			signal.onOff = 0u;
 		}
 
-		//마지막으로 보낸 신호와 지금 계산됀 값이 다를 경우 신호 전송
-        if(signal.level != last.level || isFirstSend){
-            sendAlarm(signal);
+		//처음에만 전송
+		if(isFirstSend){
+			sendAlarm(signal);
 			isFirstSend = false;
+		}
+
+		//마지막으로 보낸 신호와 지금 계산됀 값이 다를 경우 신호 전송
+        if(signal.onOff != last.onOff || 
+			(signal.value != last.value && 
+				abs(lastSend - millis()) > (1000 * 60))){
+            sendAlarm(signal);
+			lastSend = millis();
         }
         last = signal;
 	}

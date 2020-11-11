@@ -29,9 +29,13 @@ class MotorInterval : public Service {
 
         //onOff
         bool onOff;
+        
+        bool flag;
 
         //모터 세기를 설정
-        MOTOR_STATUS sendMessage(const MOTOR_STATUS status) const {
+        MOTOR_STATUS sendMessage(MOTOR_STATUS status) const {
+            //사용 가능 플래그가 설정되지 않은 경우, 무조건 OFF
+            status = (flag) ? status : MOTOR_STATUS::MOTOR_OFF;
             switch(status){
                 //분사가 필요하면 최소 출력으로 모터를 송출
                 //control board가 아닌경우 솔레노이드 벨브를 엶
@@ -79,6 +83,7 @@ class MotorInterval : public Service {
 
     //모터 서비스 init
     MotorInterval() {
+        flag = false;
         intervalEnable = true;
         onOff = false;
         lastIntervalStatus = MOTOR_STATUS::MOTOR_OFF;
@@ -154,28 +159,38 @@ class MotorInterval : public Service {
     //다른 서비스에서 broadcast 메세지가 온경우 실행
     void onMessage(const service_signal_t message){
         //메세지 종류가 모터 제어 관련이면
-        if(message.type == SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET){
-            //내부 내용을 파싱해서 필요한 정보를 설정
-            motor_interval_service_signal_t signal;
-            signal.value = message.value;
-            if(signal.isIntervalSet){
-                this->intervalSpan = signal.intervalSpan;
-                this->intervalTime = signal.intervalTime;
-                if(signal.intervalEnable != this->intervalEnable){
-                    this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_OFF);
-                    this->lastTime = min(millis() - signal.intervalTime, 0ul);
+        switch(message.type){
+            case SERVICE_SIGNAL_TYPE::MOTOR_INTERVAL_SET : {
+                //내부 내용을 파싱해서 필요한 정보를 설정
+                motor_interval_service_signal_t signal;
+                signal.value = message.value;
+                if(signal.isIntervalSet){
+                    this->intervalSpan = signal.intervalSpan;
+                    this->intervalTime = signal.intervalTime;
+                    if(signal.intervalEnable != this->intervalEnable){
+                        this->lastIntervalStatus = this->sendMessage(MOTOR_STATUS::MOTOR_OFF);
+                        this->lastTime = min(millis() - signal.intervalTime, 0ul);
+                    }
+                    this->intervalEnable = signal.intervalEnable;
+                    ESP_LOGI(typename(this), "Enable %u", this->intervalEnable);
+                    ESP_LOGI(typename(this), "Span %u", this->intervalSpan);
+                    ESP_LOGI(typename(this), "Time %u", this->intervalTime);
+                    ESP_LOGI(typename(this), "LastRunningTime %u", this->lastTime);
+                    ESP_LOGI(typename(this), "LastMotorStatus %u", this->lastIntervalStatus != MOTOR_STATUS::MOTOR_OFF);
+                }else{
+                    this->onOff = signal.onOff;
+                    ESP_LOGI(typename(this), "Motor %s", this->onOff ? "ON" : "OFF");
+                    this->sendMessage(this->onOff ? MOTOR_STATUS::MOTOR_ON : MOTOR_STATUS::MOTOR_OFF);
                 }
-                this->intervalEnable = signal.intervalEnable;
-                ESP_LOGI(typename(this), "Enable %u", this->intervalEnable);
-                ESP_LOGI(typename(this), "Span %u", this->intervalSpan);
-                ESP_LOGI(typename(this), "Time %u", this->intervalTime);
-                ESP_LOGI(typename(this), "LastRunningTime %u", this->lastTime);
-                ESP_LOGI(typename(this), "LastMotorStatus %u", this->lastIntervalStatus != MOTOR_STATUS::MOTOR_OFF);
-            }else{
-                this->onOff = signal.onOff;
-                ESP_LOGI(typename(this), "Motor %s", this->onOff ? "ON" : "OFF");
-                this->sendMessage(this->onOff ? MOTOR_STATUS::MOTOR_ON : MOTOR_STATUS::MOTOR_OFF);
+                break;
             }
+            case SERVICE_SIGNAL_TYPE::ALARM : {
+                water_level_service_signal_t signal;
+                signal.value = message.value;
+                flag = !signal.onOff;
+                break;
+            }
+            default : break;
         }
     }
 };

@@ -77,12 +77,8 @@ public:
 		signal.level = std::min(map(avg, WATER_MIN_THRESHOLD, WATER_MAX_THRESHOLD, 0, 101), 100L);
 		
 		//만약 현재 유량이 일정 수치보다 낮을 경우 alarm 신호 활성화
-		if (signal.level <= WATER_LOW_THRESHOLD) {
-            signal.onOff = 1u;
-		} else {
-			signal.onOff = 0u;
-		}
-
+		signal.onOff = (signal.level <= WATER_LOW_THRESHOLD);
+	
 		//처음에만 전송
 		if(isFirstSend){
 			sendAlarm(signal);
@@ -90,13 +86,13 @@ public:
 		}
 
 		//마지막으로 보낸 신호와 지금 계산됀 값이 다를 경우 신호 전송
-        if(signal.onOff != last.onOff || 
-			(signal.value != last.value && 
-				abs(lastSend - millis()) > (1000 * 60))){
+		const auto diff = iabs(millis() - lastSend);
+        if((signal.onOff != last.onOff) || (diff > (1000 * 60))){
+			ESP_LOGI(typename(this), "DIFF %lu", diff);
             sendAlarm(signal);
 			lastSend = millis();
+			last.value = signal.value;
         }
-        last = signal;
 	}
 
 	void onMessage(const service_signal_t message) {

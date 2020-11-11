@@ -9,6 +9,8 @@
 #include <Arduino.h>
 #include <inttypes.h>
 
+#define iabs(value) (value > 0) ? value : (value * -1)
+
 //통신할때 사용하는 상수
 const uint32_t FW_VERSION = 0;
 const unsigned long HARDWARE_UART_BAUDRATE = 460800ul; //테스트용

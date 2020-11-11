@@ -201,6 +201,7 @@ class MotorInterval : public Service {
                 water_level_service_signal_t signal;
                 signal.value = message.value;
                 flag = !signal.onOff;
+                ESP_LOGI(typename(this), "motor flag %u", flag);
                 break;
             }
             #endif

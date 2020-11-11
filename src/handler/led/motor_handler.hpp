@@ -28,10 +28,12 @@ class MotorHanlder : public MessageGpioControlHandler {
             motor.message = message.message;
             switch(motor.status){
                 case MOTOR_STATUS::MOTOR_OFF : {
+                    ESP_LOGI(typename(this), "MOTOR OFF");
                     digitalWrite(this->pin, LOW);
                     break;
                 }
                 case MOTOR_STATUS::MOTOR_ON :{
+                    ESP_LOGI(typename(this), "MOTOR ON");
                     digitalWrite(this->pin, HIGH);
                     break;
                 }

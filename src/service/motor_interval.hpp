@@ -29,13 +29,17 @@ class MotorInterval : public Service {
 
         //onOff
         bool onOff;
-        
+
+        #if CONTROL_BOARD == 1
         bool flag;
+        #endif
 
         //모터 세기를 설정
         MOTOR_STATUS sendMessage(MOTOR_STATUS status) const {
             //사용 가능 플래그가 설정되지 않은 경우, 무조건 OFF
+            #if CONTROL_BOARD == 1
             status = (flag) ? status : MOTOR_STATUS::MOTOR_OFF;
+            #endif
             switch(status){
                 //분사가 필요하면 최소 출력으로 모터를 송출
                 //control board가 아닌경우 솔레노이드 벨브를 엶
@@ -105,13 +109,17 @@ class MotorInterval : public Service {
     //공기를 제거하는 과정
     //모든 솔레노이드 벨브를 닫고 최대 출력으로 물을 순환시켜, 공기를 제거함
     void removeAir(){
-        #if CONTROL_BOARD == 1
-            sendMessage(MOTOR_STATUS::MOTOR_OFF);
-            delay(MOTOR_COMMAND_TIMEOUT);
-            ledcWrite(PWM_CHANNEL, PWM_MAX);
-        #else
-            digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
-        #endif
+            #if CONTROL_BOARD == 1
+                sendMessage(MOTOR_STATUS::MOTOR_OFF);
+                delay(MOTOR_COMMAND_TIMEOUT);
+                if(flag){
+                    ledcWrite(PWM_CHANNEL, PWM_MAX);
+                }else{
+                    ledcWrite(PWM_CHANNEL, PWM_LOW);
+                }
+            #else
+                digitalWrite(WATER_SOLENOID_VALVE_PIN, HIGH);
+            #endif
         airClearStartTime = millis();
     }
 
@@ -120,9 +128,13 @@ class MotorInterval : public Service {
     void execute(){
         if(airClearStartTime != 0){
             if(airClearStartTime + MOTOR_AIR_REMOVE_TIME < millis()){
-                #if CONTROL_BOARD == 1
                 //ledcWrite(PWM_CHANNEL, PWM_LOW);
-                ledcWrite(PWM_CHANNEL, PWM_HIGH);
+                #if CONTROL_BOARD == 1
+                if(flag){
+                    ledcWrite(PWM_CHANNEL, PWM_HIGH);
+                }else{
+                    ledcWrite(PWM_CHANNEL, PWM_LOW);
+                }
                 #else
                 digitalWrite(WATER_SOLENOID_VALVE_PIN, LOW);
                 #endif
@@ -184,12 +196,14 @@ class MotorInterval : public Service {
                 }
                 break;
             }
+            #if CONTROL_BOARD == 1
             case SERVICE_SIGNAL_TYPE::ALARM : {
                 water_level_service_signal_t signal;
                 signal.value = message.value;
                 flag = !signal.onOff;
                 break;
             }
+            #endif
             default : break;
         }
     }

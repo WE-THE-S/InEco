@@ -53,7 +53,7 @@ const uint8_t LED_COUNT = 4;
 
 //http
 const uint16_t HTTP_SERVER_PORT = 80;
-const char *const SSID = "THES3";
+const char *const SSID = "InEco";
 const char *const PASSWORD = "1234123412";
 const uint8_t WATER_LOW_THRESHOLD = 20u;
 const char *const WEBSOCKET_SERVER_HOST = "the-s.kr";

@@ -75,7 +75,8 @@ enum class SERVICE_SIGNAL_TYPE : uint8_t {
     ALARM,
     WATER_LEVEL,
     MOTOR_INTERVAL_SET,
-    PACKET_SEND
+    PACKET_SEND,
+    AIR_SENSOR_VALUE
 };
 
 //서비스간 신호 전달용 기본 구조
@@ -86,6 +87,17 @@ typedef struct _service_signal_t {
         uint8_t bytes[];
     };
 } service_signal_t;
+
+//tvoc 신호 전달
+typedef union _air_sensor_service_signal_t {
+    uint64_t value;
+    struct{
+        uint16_t tvoc;
+        uint16_t co2;
+        int8_t temp;
+        uint8_t humi;
+    };
+} air_sensor_service_signal_t;
 
 //water level 신호 전달
 typedef union _water_level_service_signal_t {

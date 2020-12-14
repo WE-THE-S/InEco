@@ -76,7 +76,8 @@ enum class SERVICE_SIGNAL_TYPE : uint8_t {
     WATER_LEVEL,
     MOTOR_INTERVAL_SET,
     PACKET_SEND,
-    AIR_SENSOR_VALUE
+    AIR_SENSOR_VALUE,
+    SET_LED_INTERVAL
 };
 
 //서비스간 신호 전달용 기본 구조
@@ -87,6 +88,26 @@ typedef struct _service_signal_t {
         uint8_t bytes[];
     };
 } service_signal_t;
+
+
+//led color 신호 전달
+typedef union _led_color_service_signal_t {
+    uint64_t value;
+    struct{
+        color_t color;
+    };
+} led_color_service_signal_t;
+
+//led 패턴 신호 전달
+typedef union _led_pattern_service_signal_t {
+    uint64_t value;
+    struct{
+        bool isSlow;
+        uint8_t len;
+        std::pair<uint32_t, uint32_t>* array; //col, row
+    };
+} led_pattern_service_signal_t;
+
 
 //tvoc 신호 전달
 typedef union _air_sensor_service_signal_t {

@@ -76,6 +76,8 @@ const uint16_t WATER_RAW_BUFFER_SIZE = 1000;
 const uint8_t BME280_ADDRESS = 0x76;
 const uint8_t CCS811_ADDRESS = 0x5a;
 
+const uint32_t FAST_PATTERN_TIME = 250;
+const uint32_t SLOW_PATTERN_TIME = 1000;
 //웹 서버 표출용 http 코드
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \

@@ -25,7 +25,7 @@ private:
 	DFRobot_CCS811 ccs;
 
 	//알람 신호를 주변 서비스에 뿌리는 함수
-	inline void sendAlarm(const air_sensor_service_signal_t value) {
+	inline void send(const air_sensor_service_signal_t value) {
 		service_signal_t signal;
 		signal.type = SERVICE_SIGNAL_TYPE::AIR_SENSOR_VALUE;
 		signal.value = value.value;
@@ -36,10 +36,30 @@ private:
 public:
 	//i2c 인스턴스 초기화
 	AirSensor() {
-		bme.
+		bme.reset();
+		while(bme.begin() != BME::eStatusOK) {
+			ESP_LOGI(typename(this), "BME280 INIT FAIL");
+			delay(100);
+		}
+		while(ccs.begin() != 0){
+			ESP_LOGI(typename(this), "CCS INIT FAIL");
+			delay(100);
+		}
+    	ccs.setMeasCycle(ccs.eCycle_250ms);
 	}
 
 	void execute() {
+		if(ccs.checkDataReady()){
+			const auto co2 = ccs.getCO2PPM();
+			const auto tvoc = ccs.getTVOCPPB();
+			const auto temp = bme.getTemperature();
+			const auto humi = bme.getHumidity();
+			airSignal.co2 = co2;
+			airSignal.tvoc = tvoc;
+			airSignal.temp = static_cast<int8_t>(temp);
+			airSignal.humi = static_cast<uint8_t>(humi);
+			send(airSignal);
+		}
 	}
 
 	void onMessage(const service_signal_t message) {

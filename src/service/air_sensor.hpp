@@ -21,8 +21,8 @@ class AirSensor : public Service {
 private:
 	//마지막으로 보낸 현재 공기
 	air_sensor_service_signal_t last;
-	DFRobot_BME280_IIC bme(&Wire, 0x77);
-	DFRobot_CCS811 ccs;
+	DFRobot_BME280_IIC bme(&Wire, BME280_ADDRESS);
+	DFRobot_CCS811 ccs(&Wire, CCS811_ADDRESS)
 
 	//알람 신호를 주변 서비스에 뿌리는 함수
 	inline void send(const air_sensor_service_signal_t value) {

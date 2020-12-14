@@ -72,6 +72,10 @@ const uint16_t WATER_MAX_THRESHOLD = 1520;
 const uint16_t WATER_MIN_THRESHOLD = 600;
 const uint16_t WATER_RAW_BUFFER_SIZE = 1000;
 
+//air sensor
+const uint8_t BME280_ADDRESS = 0x76;
+const uint8_t CCS811_ADDRESS = 0x5a;
+
 //웹 서버 표출용 http 코드
 const ROMFN_ATTR char *const MOTOR_SET_HTML = "<!DOCTYPE html>\
 \

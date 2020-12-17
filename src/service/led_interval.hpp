@@ -15,29 +15,32 @@
 #include <vector>
 
 
-using namespace std;
-
 //analog waterlevel 모듈과 통신하여 현재 유량을 측정하는 클래스
 class LedInterval : public Service {
 private:
 	uint32_t lastSetTime;
 	//패턴과 사이즈 설정
-	pair<uint32_t, uint32_t> size {0, 0};
-	deque<pair<uint32_t, uint32_t>> pattern;
+	size_t patternSize;
+	pair<uint8_t, uint8_t>* pattern;
 	bool isSlow;
-	color_t color;
+	color_t defaultColor;
+	color_t blackColor;
 
-	//모터 세기를 설정
-	void send(led_message_t message) const {
-		//주변 장치들에 뿌리기 위해서 communication_service에 명령어 패킷을 전달
-		auto broadcast = Broadcast<service_signal_t>::getInstance();
+	void send(const uint8_t x, const uint8_t y, const color_t color) const {
 		service_signal_t signal;
 		communcation_service_signal_t com;
-	
+		led_message_t *ledMessage = new led_message_t;
+		memset(ledMessage->message.bytes, 0x00, sizeof(led_message_t));
+		auto broadcast = Broadcast<service_signal_t>::getInstance();
+
+		ledMessage->row = y;
+		ledMessage->col = x;
+		ledMessage->color = color;
+
 		com.dir = MESSAGE_DIRECTION::TO_SLAVE;
-		com.type = MESSAGE_TYPE::RUN_MOTOR;
-		com.message = &(message.message);
-		
+		com.type = MESSAGE_TYPE::SET_COLOR;
+		com.message = &ledMessage->message;
+
 		signal.value = com.value;
 		signal.type = SERVICE_SIGNAL_TYPE::PACKET_SEND;
 
@@ -46,32 +49,27 @@ private:
 
 	void showNextPattern() const {
 		led_message_t message;
-		if(!pattern.empty()){
-			auto last = pattern.back();
-			message.col = last.first;
-			message.row = last.second;
-			message.color.r = 0;
-			message.color.g = 0;
-			message.color.b = 0;
-			message.color.bright = 0;
-			send(message);
-			pair<uint32_t, uint32_t> target = pattern.front();
-
-			message.col = target.first;
-			message.row = target.first;
-			message.color.r = 0;
-			message.color.g = 0;
-			message.color.b = 0;
-			message.color.bright = 0;
-			pattern.pop_front();
-			pattern.push_back(target);
-			send(message);
+		if(patternSize != 0){
+			auto last = pattern[patternSize - 1];
+			send(last.first, last.second, blackColor);
+			pair<uint32_t, uint32_t> target = pattern[0];
+			memmove(pattern, &pattern[1], sizeof(pair<uint8_t, uint8_t>*) * (patternSize - 1));
+			pattern[patternSize - 1] = target;
+			send(target.first, target.second, defaultColor);
 		}
 	}
 public:
 	//i2c 인스턴스 초기화
 	LedInterval() {
-
+		pattern = nullptr;
+		defaultColor.bright = 255u;
+		defaultColor.r = 255u;
+		defaultColor.g = 255u;
+		defaultColor.b = 255u;
+		blackColor.bright = 0u;
+		blackColor.r = 0u;
+		blackColor.g = 0u;
+		blackColor.b = 0u;
 	}
 
 	void execute() {
@@ -92,7 +90,7 @@ public:
 
 	void onMessage(const service_signal_t message) {
 		if(message.type == SERVICE_SIGNAL_TYPE::SET_LED_INTERVAL){
-
+			led_message_t led;
 		}
 	}
 };

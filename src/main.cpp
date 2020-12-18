@@ -15,7 +15,8 @@ MotorHanlder motor;
 LedTranslate translate;
 
 #elif CONTROL_BOARD == 1
-
+#include "./service/air_sensor.hpp"
+#include "./service/led_interval.hpp"
 #include "./service/button.hpp"
 #include "./service/alarm.hpp"
 #include "./service/lcd.hpp"
@@ -39,6 +40,9 @@ Alarm ledAlarm;
 LCD lcd;
 MotorInterval motorInterval;
 WaterLevel waterLevel;
+LedInterval ledInterval;
+AirSensor airSensor;
+
 void notFound() {
 	server.send(404, "text/html", "not found");
 }
@@ -189,6 +193,8 @@ void setup() {
 	instance->add(&motorInterval);
 	instance->add(&lcd);
 	instance->add(&button);
+	instance->add(&ledInterval);
+	instance->add(&airSensor);
 	
 	//처음 시작할때 라인에 있는 공기 뺴기 작업 수행
 	//motorInterval.removeAir();
@@ -204,6 +210,8 @@ void loop() {
 	waterLevel.execute();
 	motorInterval.execute();
 	button.execute();
+	airSensor.execute();
+	ledInterval.execute();
 	server.handleClient();
 #endif
 }

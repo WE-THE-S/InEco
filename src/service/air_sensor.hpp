@@ -17,20 +17,24 @@
 #include <DFRobot_BME280.h>
 #include <DFRobot_CCS811.h>
 
-//analog waterlevel 모듈과 통신하여 현재 유량을 측정하는 클래스
+static DFRobot_BME280_IIC bme(&Wire, BME280_ADDRESS);
+	
+//공기 센서 
 class AirSensor : public Service {
 private:
-	//마지막으로 보낸 현재 공기
+//마지막으로 보낸 현재 공기
 	air_sensor_service_signal_t last;
-	DFRobot_BME280_IIC bme(&Wire, BME280_ADDRESS);
-	DFRobot_CCS811 ccs(&Wire, CCS811_ADDRESS);
+	DFRobot_CCS811 ccs;
 
 	//알람 신호를 주변 서비스에 뿌리는 함수
 	inline void send(const air_sensor_service_signal_t value) {
 		service_signal_t signal;
 		signal.type = SERVICE_SIGNAL_TYPE::AIR_SENSOR_VALUE;
 		signal.value = value.value;
-        ESP_LOGI(typename(this), "level %u", value.level);
+        ESP_LOGI(typename(this), "tvoc %u", value.tvoc);
+        ESP_LOGI(typename(this), "co2 %u", value.co2);
+        ESP_LOGI(typename(this), "temp %u", value.temp);
+        ESP_LOGI(typename(this), "humi %u", value.humi);
 		Broadcast<service_signal_t>::getInstance()->broadcast(signal);
 	}
 
@@ -38,7 +42,7 @@ public:
 	//i2c 인스턴스 초기화
 	AirSensor() {
 		bme.reset();
-		while(bme.begin() != BME::eStatusOK) {
+		while(bme.begin() != DFRobot_BME280::eStatus_t::eStatusOK) {
 			ESP_LOGI(typename(this), "BME280 INIT FAIL");
 			delay(100);
 		}
@@ -55,11 +59,11 @@ public:
 			const auto tvoc = ccs.getTVOCPPB();
 			const auto temp = bme.getTemperature();
 			const auto humi = bme.getHumidity();
-			airSignal.co2 = co2;
-			airSignal.tvoc = tvoc;
-			airSignal.temp = static_cast<int8_t>(temp);
-			airSignal.humi = static_cast<uint8_t>(humi);
-			send(airSignal);
+			last.co2 = co2;
+			last.tvoc = tvoc;
+			last.temp = static_cast<int8_t>(temp);
+			last.humi = static_cast<uint8_t>(humi);
+			send(last);
 		}
 	}
 

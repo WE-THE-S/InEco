@@ -14,17 +14,17 @@
 #include <soc/rtc_cntl_reg.h>
 
 #include <Wire.h>
-#include <DFRobot_BME280.h>
-#include <DFRobot_CCS811.h>
+#include <SparkFunBME280.h>
+#include <SparkFunCCS811.h>
 
 	
 //공기 센서 
 class AirSensor : public Service {
 private:
 //마지막으로 보낸 현재 공기
-	DFRobot_BME280_IIC bme;
+	BME280 bme;
 	air_sensor_service_signal_t last;
-	DFRobot_CCS811 ccs;
+	CCS811 ccs;
 
 	//알람 신호를 주변 서비스에 뿌리는 함수
 	inline void send(const air_sensor_service_signal_t value) {
@@ -38,40 +38,91 @@ private:
 		Broadcast<service_signal_t>::getInstance()->broadcast(signal);
 	}
 
-	void init() {
-		bme.reset();
-		bme.begin();
-		ccs.begin();
-    	ccs.setMeasCycle(ccs.eCycle_250ms);
+	void init() { 
+		Wire.begin();
+		ESP_LOGI(typename(this), "bme : %u", bme.begin());
+		ESP_LOGI(typename(this), "ccs : %u", ccs.begin());
 	}
 
 public:
 	//i2c 인스턴스 초기화
-	AirSensor() : bme(&Wire, BME280_ADDRESS) {
+	AirSensor() : ccs(CCS811_ADDRESS) {
+		//***Driver settings********************************//
+		//commInterface can be I2C_MODE
+		//specify I2C address.  Can be 0x77(default) or 0x76
+
+		//For I2C, enable the following
+		bme.settings.commInterface = I2C_MODE;
+		bme.settings.I2CAddress = BME280_ADDRESS;
+
+		//***Operation settings*****************************//
+
+		//runMode can be:
+		//  0, Sleep mode
+		//  1 or 2, Forced mode
+		//  3, Normal mode
+		bme.settings.runMode = 3; //Forced mode
+
+		//tStandby can be:
+		//  0, 0.5ms
+		//  1, 62.5ms
+		//  2, 125ms
+		//  3, 250ms
+		//  4, 500ms
+		//  5, 1000ms
+		//  6, 10ms
+		//  7, 20ms
+		bme.settings.tStandby = 0;
+
+		//filter can be off or number of FIR coefficients to use:
+		//  0, filter off
+		//  1, coefficients = 2
+		//  2, coefficients = 4
+		//  3, coefficients = 8
+		//  4, coefficients = 16
+		bme.settings.filter = 0;
+
+		//tempOverSample can be:
+		//  0, skipped
+		//  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+		bme.settings.tempOverSample = 1;
+
+		//pressOverSample can be:
+		//  0, skipped
+		//  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+		bme.settings.pressOverSample = 1;
+
+		//humidOverSample can be:
+		//  0, skipped
+		//  1 through 5, oversampling *1, *2, *4, *8, *16 respectively
+		bme.settings.humidOverSample = 1;
 		ESP_LOGI(typename(this), "sda : %u", SDA);
 		ESP_LOGI(typename(this), "scl : %u", SCL);
 		init();
 	}
 
 	void execute() {
-		init();
-		const auto start = millis() + 400;
-		while(!ccs.checkDataReady()){
-			if(millis() > start){
-				break;
-			}
-			delay(10);
-		}
-		const auto temp = 0; // bme.getTemperature();
-		const auto humi = 0; // bme.getHumidity();
-		const auto co2 = ccs.getCO2PPM();
-		const auto tvoc = ccs.getTVOCPPB();
+		if (ccs.dataAvailable()) {
+			ccs.readAlgorithmResults();
 
-		last.co2 = co2;
-		last.tvoc = tvoc;
-		last.temp = static_cast<int8_t>(temp);
-		last.humi = static_cast<uint8_t>(humi);
-		send(last);
+			const float rawTemp = bme.readTempC();
+			const float rawHumi = bme.readFloatHumidity(); 
+			const uint16_t co2 = ccs.getCO2();
+			const uint16_t tvoc = ccs.getTVOC();
+			const int8_t temp = static_cast<int8_t>(rawTemp);
+			const uint8_t humi = static_cast<uint8_t>(rawHumi);
+
+    		ccs.setEnvironmentalData(rawHumi, rawTemp);
+			last.co2 = co2;
+			last.tvoc = tvoc;
+			last.temp = temp;
+			last.humi = humi;
+			send(last);
+		}else if(ccs.checkForStatusError()){
+			ESP_LOGW(typename(this), "error code : %u", ccs.getErrorRegister());
+			init();
+		}
+
 	
 	}
 

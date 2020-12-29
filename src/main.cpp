@@ -66,6 +66,27 @@ void setup() {
 
 	server.onNotFound(notFound);
 
+	server.on("/", HTTP_GET, []() {
+		ESP_LOGI("http", "%s", server.uri().c_str());
+		
+		auto last = airSensor.getLast();
+		DynamicJsonDocument json(256);
+		json["humi"] = last.humi;
+		json["temp"] = last.temp;
+		json["tvoc"] = last.tvoc;
+		json["co2"] = last.co2;
+
+		size_t len = measureJson(json);
+		char *buffer = new char[len + 32];
+		serializeJson(json, buffer, len + 1);
+		server.send(200, "text/json", buffer);
+		json.clear();
+		json.shrinkToFit();
+		json.garbageCollect();
+		delete[] buffer;
+	});
+
+
 	server.on("/led/{}/{}/{}", HTTP_GET, []() {
 		ESP_LOGI("http", "%s", server.uri().c_str());
 		const String yStr = server.pathArg(0);

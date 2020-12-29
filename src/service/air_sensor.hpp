@@ -45,6 +45,9 @@ private:
 	}
 
 public:
+	air_sensor_service_signal_t getLast() const {
+		return last;
+	}
 	//i2c 인스턴스 초기화
 	AirSensor() : ccs(CCS811_ADDRESS) {
 		//***Driver settings********************************//
